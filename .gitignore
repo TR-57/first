@@ -3,6 +3,9 @@
 .env.local
 *.env
 
+# Generated contact exports (contain personal data)
+contact_batches/
+
 # Python
 __pycache__/
 *.py[cod]
