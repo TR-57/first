@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>The K Hotel — App Presentation</title>
+<style>
+:root{
+  --burgundy:#8C2332;--burgundy-d:#6E1A27;--gold:#C9A36A;--gold-d:#A9854E;
+  --cream:#F7F3EE;--sand:#EDE4D9;--charcoal:#2B2B2B;--muted:#8a8079;--line:#e8ded3;
+  --serif:"Playfair Display",Georgia,serif;--sans:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--sans);color:var(--charcoal);background:var(--cream);line-height:1.6;}
+.wrap{max-width:1080px;margin:0 auto;padding:0 22px;}
+h1,h2,h3{font-family:var(--serif);}
+
+/* progress + nav */
+.prog{position:fixed;top:0;left:0;height:4px;background:linear-gradient(90deg,var(--gold),var(--burgundy));width:0;z-index:200;transition:width .1s;}
+.topnav{position:fixed;top:0;left:0;right:0;background:rgba(247,243,238,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);z-index:150;display:flex;align-items:center;justify-content:space-between;padding:12px 22px;}
+.topnav .k{font-family:var(--serif);font-size:22px;font-weight:800;color:var(--burgundy);}
+.topnav .k sup{font-size:10px;}
+.topnav nav{display:flex;gap:6px;flex-wrap:wrap;}
+.topnav a{font-size:12px;color:var(--charcoal);text-decoration:none;padding:6px 11px;border-radius:20px;transition:.15s;}
+.topnav a:hover{background:var(--sand);color:var(--burgundy);}
+
+section{padding:88px 0 28px;border-bottom:1px solid var(--line);}
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .7s,transform .7s;}
+.reveal.in{opacity:1;transform:none;}
+.kick{font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--gold-d);font-weight:800;}
+h2.big{font-size:38px;color:var(--burgundy-d);margin:8px 0 6px;line-height:1.1;}
+.lead{font-size:17px;color:#5b524c;max-width:720px;}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;color:#fff;position:relative;overflow:hidden;border:none;padding:0;}
+.hero .bg{position:absolute;inset:0;background:linear-gradient(120deg,rgba(110,26,39,.92),rgba(140,35,50,.78)),url('https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1400&q=80') center/cover;}
+.hero .glow{position:absolute;top:-20%;right:-10%;width:600px;height:600px;background:radial-gradient(circle,rgba(201,163,106,.4),transparent 65%);}
+.hero .wrap{position:relative;z-index:2;}
+.hero .mono{font-family:var(--serif);font-size:90px;font-weight:800;line-height:.9;animation:rise 1s ease;}
+.hero .mono sup{font-size:30px;}
+.hero h1{font-size:46px;margin:18px 0 10px;max-width:720px;animation:rise 1s .1s backwards;}
+.hero p{font-size:19px;opacity:.92;max-width:620px;animation:rise 1s .2s backwards;}
+.hero .sw{display:flex;gap:10px;margin-top:26px;animation:rise 1s .3s backwards;}
+.hero .sw span{padding:8px 14px;border-radius:30px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);font-size:12px;font-weight:700;}
+@keyframes rise{from{opacity:0;transform:translateY(26px);}}
+.scrollhint{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);color:#fff;font-size:12px;opacity:.8;z-index:2;animation:bob 1.6s infinite;}
+@keyframes bob{50%{transform:translate(-50%,8px);}}
+
+/* palette */
+.palette{display:flex;gap:14px;flex-wrap:wrap;margin-top:24px;}
+.col{flex:1;min-width:150px;border-radius:14px;overflow:hidden;box-shadow:0 8px 24px rgba(60,20,25,.1);background:#fff;}
+.col .c{height:80px;}
+.col .t{padding:11px 14px;font-size:12px;}
+.col .t b{display:block;font-size:13px;}
+
+/* grid of features */
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px;margin-top:30px;}
+.feat{background:#fff;border-radius:16px;padding:22px;box-shadow:0 8px 24px rgba(60,20,25,.07);border-top:3px solid var(--gold);transition:.2s;}
+.feat:hover{transform:translateY(-4px);box-shadow:0 16px 36px rgba(60,20,25,.13);}
+.feat .e{font-size:28px;}
+.feat h3{font-size:18px;color:var(--burgundy-d);margin:10px 0 6px;}
+.feat p{font-size:13px;color:#5b524c;}
+
+/* journey */
+.journey{display:flex;gap:14px;margin-top:30px;flex-wrap:wrap;}
+.step{flex:1;min-width:150px;background:#fff;border-radius:16px;padding:20px;box-shadow:0 8px 24px rgba(60,20,25,.07);position:relative;}
+.step .num{width:34px;height:34px;border-radius:50%;background:var(--burgundy);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-family:var(--serif);margin-bottom:10px;}
+.step h4{font-size:15px;color:var(--burgundy-d);}
+.step p{font-size:12px;color:var(--muted);margin-top:4px;}
+
+/* page walkthrough rows */
+.pagerow{display:flex;gap:30px;align-items:center;margin-top:40px;flex-wrap:wrap;}
+.pagerow.rev{flex-direction:row-reverse;}
+.phone{width:260px;height:540px;background:#000;border-radius:36px;padding:9px;flex:0 0 auto;box-shadow:0 30px 60px rgba(60,20,25,.3);margin:0 auto;}
+.pscr{width:100%;height:100%;border-radius:28px;overflow:hidden;background:var(--cream);position:relative;display:flex;flex-direction:column;}
+.pside{flex:1;min-width:280px;}
+.pside h3{font-size:24px;color:var(--burgundy-d);margin-bottom:6px;}
+.pside .tagrow{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0;}
+.tg{background:var(--sand);color:var(--burgundy-d);font-size:11px;font-weight:700;padding:5px 11px;border-radius:20px;}
+.pside ul{list-style:none;margin-top:8px;}
+.pside li{font-size:14px;color:#5b524c;padding:5px 0 5px 24px;position:relative;}
+.pside li::before{content:'✓';position:absolute;left:0;color:var(--gold-d);font-weight:800;}
+
+/* mini screen renders */
+.m-bar{height:34px;}
+.m-hero{height:150px;background-size:cover;background-position:center;display:flex;align-items:flex-end;padding:12px;color:#fff;position:relative;}
+.m-hero .e{font-size:8px;letter-spacing:2px;color:var(--gold);font-weight:800;}
+.m-hero h6{font-family:var(--serif);font-size:18px;}
+.m-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:12px;}
+.m-tile{background:#fff;border-radius:10px;padding:8px 2px;text-align:center;font-size:7px;box-shadow:0 4px 10px rgba(0,0,0,.05);}
+.m-tile .e{font-size:15px;display:block;}
+.m-card{margin:0 12px 10px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 6px 16px rgba(0,0,0,.07);}
+.m-card .i{height:64px;background-size:cover;background-position:center;}
+.m-card .t{padding:8px 10px;}
+.m-card .t h6{font-family:var(--serif);font-size:12px;}
+.m-card .t .p{color:var(--burgundy);font-weight:800;font-size:10px;}
+.m-card .t small{font-size:8px;color:var(--muted);display:block;}
+.m-kcard{margin:12px;background:linear-gradient(125deg,var(--burgundy),var(--burgundy-d));color:#fff;border-radius:16px;padding:14px;position:relative;overflow:hidden;}
+.m-kcard .sh{position:absolute;top:-30%;right:-10%;width:120px;height:120px;background:radial-gradient(circle,rgba(201,163,106,.5),transparent 70%);}
+.m-kcard .conf{font-size:7px;letter-spacing:1px;opacity:.8;}
+.m-kcard h6{font-family:var(--serif);font-size:15px;margin:4px 0;}
+.m-kcard .meta{display:flex;gap:14px;font-size:8px;margin-top:8px;}
+.m-note{margin:10px 12px;background:#fff8ef;border:1px solid var(--gold);border-radius:10px;padding:9px;font-size:8.5px;color:#7a5a2a;}
+.m-qr{width:96px;height:96px;margin:14px auto;border:5px solid #fff;border-radius:10px;background:repeating-linear-gradient(90deg,#2b2b2b 0 5px,#fff 5px 10px),repeating-linear-gradient(0deg,transparent 0 5px,rgba(255,255,255,.5) 5px 10px);background-blend-mode:multiply;box-shadow:0 6px 16px rgba(0,0,0,.15);}
+.m-chat{padding:12px;display:flex;flex-direction:column;gap:7px;}
+.m-bub{max-width:80%;font-size:9px;padding:7px 10px;border-radius:11px;}
+.m-bub.them{background:#fff;box-shadow:0 4px 10px rgba(0,0,0,.06);align-self:flex-start;border-bottom-left-radius:3px;}
+.m-bub.me{background:var(--burgundy);color:#fff;align-self:flex-end;border-bottom-right-radius:3px;}
+.m-btn{margin:10px 12px;background:var(--burgundy);color:#fff;text-align:center;border-radius:20px;padding:9px;font-size:10px;font-weight:700;}
+.m-row{display:flex;gap:8px;margin:0 12px 8px;background:#fff;border-radius:10px;padding:7px;box-shadow:0 4px 10px rgba(0,0,0,.05);align-items:center;}
+.m-row .th{width:42px;height:34px;border-radius:7px;background-size:cover;background-position:center;}
+.m-row h6{font-family:var(--serif);font-size:10px;}
+.m-row small{font-size:7.5px;color:var(--muted);}
+.m-row .p{font-size:9px;font-weight:800;color:var(--burgundy);}
+
+/* dashboard shots */
+.dashshot{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 16px 40px rgba(60,20,25,.16);border:1px solid var(--line);}
+.dashshot .bar{height:30px;background:#efe7de;display:flex;align-items:center;gap:6px;padding:0 12px;}
+.dashshot .bar i{width:9px;height:9px;border-radius:50%;display:inline-block;}
+.dd{display:flex;min-height:230px;}
+.dd .sb{width:120px;background:linear-gradient(180deg,var(--burgundy),var(--burgundy-d));color:#fff;padding:12px 8px;font-size:9px;}
+.dd .sb .k{font-family:var(--serif);font-size:16px;font-weight:800;margin-bottom:10px;padding-left:4px;}
+.dd .sb div.i{padding:6px 8px;border-radius:6px;opacity:.8;margin-bottom:2px;}
+.dd .sb div.i.on{background:rgba(255,255,255,.16);opacity:1;}
+.dd .bd{flex:1;padding:14px;background:var(--cream);}
+.dd table{width:100%;border-collapse:collapse;font-size:10px;background:#fff;border-radius:8px;overflow:hidden;}
+.dd th{text-align:left;font-size:8px;color:var(--muted);text-transform:uppercase;padding:7px 10px;border-bottom:1px solid var(--line);}
+.dd td{padding:8px 10px;border-bottom:1px solid var(--line);}
+.dd .tg2{font-size:8px;font-weight:700;padding:2px 7px;border-radius:10px;}
+.dd .live{background:#e6f4ec;color:var(--ok);}.dd .draft{background:#fdf0e3;color:#b07c2a;}
+.dd .rowact{color:var(--burgundy);font-weight:700;}
+.dd .statcards{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px;}
+.dd .sc{background:#fff;border-radius:8px;padding:9px;}
+.dd .sc .n{font-family:var(--serif);font-size:16px;font-weight:800;color:var(--burgundy);}
+.dd .sc .l{font-size:8px;color:var(--muted);}
+.editorshot{display:grid;grid-template-columns:80px 1fr 110px;gap:8px;}
+.editorshot .pp{background:#fff;border-radius:8px;padding:8px;font-size:8px;}
+.editorshot .pp .bc{padding:5px;border-radius:5px;background:var(--cream);margin-bottom:4px;}
+.editorshot .cv{background:#fff;border-radius:8px;padding:8px;display:flex;justify-content:center;}
+.editorshot .mini{width:120px;background:#000;border-radius:16px;padding:4px;}
+.editorshot .ms{background:var(--cream);border-radius:13px;overflow:hidden;}
+
+/* recommendations */
+.recgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:24px;}
+.rec{background:#fff;border-radius:14px;padding:16px;box-shadow:0 6px 18px rgba(60,20,25,.07);display:flex;gap:12px;}
+.rec .e{font-size:22px;}
+.rec h4{font-size:14px;color:var(--burgundy-d);}
+.rec p{font-size:12px;color:#5b524c;}
+
+/* roadmap */
+.road{display:flex;gap:16px;margin-top:30px;flex-wrap:wrap;}
+.phase{flex:1;min-width:200px;background:#fff;border-radius:16px;padding:20px;box-shadow:0 8px 24px rgba(60,20,25,.07);border-top:4px solid var(--burgundy);}
+.phase h4{color:var(--burgundy-d);font-size:17px;}
+.phase .when{font-size:11px;color:var(--gold-d);font-weight:800;letter-spacing:1px;text-transform:uppercase;}
+.phase ul{list-style:none;margin-top:10px;}
+.phase li{font-size:12.5px;color:#5b524c;padding:4px 0 4px 18px;position:relative;}
+.phase li::before{content:'·';position:absolute;left:6px;color:var(--gold-d);font-weight:800;}
+
+table.cost{width:100%;border-collapse:collapse;margin-top:24px;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 8px 24px rgba(60,20,25,.07);}
+table.cost th{background:var(--burgundy);color:#fff;text-align:left;padding:13px 16px;font-size:13px;}
+table.cost td{padding:12px 16px;border-bottom:1px solid var(--line);font-size:13px;}
+
+.cta{text-align:center;padding:80px 0;}
+.cta h2{font-size:34px;color:var(--burgundy-d);}
+.cta p{color:#5b524c;margin:10px 0 24px;}
+.btn{display:inline-block;background:var(--burgundy);color:#fff;text-decoration:none;border-radius:30px;padding:14px 28px;font-weight:700;font-size:14px;margin:5px;transition:.15s;}
+.btn:hover{background:var(--burgundy-d);transform:translateY(-2px);}
+.btn.gold{background:var(--gold);color:#3a2c14;}
+footer{text-align:center;padding:30px;color:var(--muted);font-size:12px;}
+.note-box{background:#fff8ef;border:1px solid var(--gold);border-radius:14px;padding:16px 20px;margin-top:24px;font-size:14px;color:#7a5a2a;}
+</style>
+</head>
+<body>
+<div class="prog" id="prog"></div>
+<div class="topnav">
+  <span class="k"><sup>THE</sup>K · App</span>
+  <nav>
+    <a href="#vision">Vision</a><a href="#journey">Journey</a><a href="#app">App</a>
+    <a href="#reminder">Reminders</a><a href="#admin">Back-office</a><a href="#recs">Ideas</a><a href="#roadmap">Roadmap</a>
+  </nav>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="bg"></div><div class="glow"></div>
+  <div class="wrap">
+    <div class="mono"><sup>THE</sup>K</div>
+    <h1>One app for the entire K Hotel experience.</h1>
+    <p>Book a room, a table, a treatment or an event — check in from your phone, unlock your door, and talk to the concierge. All in your brand.</p>
+    <div class="sw"><span>Burgundy #8C2332</span><span>Gold #C9A36A</span><span>EN / العربية</span><span>iOS · Android · Web</span></div>
+  </div>
+  <div class="scrollhint">▾ scroll to explore</div>
+</section>
+
+<!-- VISION -->
+<section id="vision"><div class="wrap reveal">
+  <div class="kick">The vision</div>
+  <h2 class="big">A direct channel that feels five-star.</h2>
+  <p class="lead">Today guests book The K through phone calls and OTAs that charge 15–20% commission. This app turns every guest into a <b>direct, loyal, repeat</b> customer — and gives your team a no-code dashboard to run it all.</p>
+  <div class="palette">
+    <div class="col"><div class="c" style="background:#8C2332"></div><div class="t"><b>Burgundy</b>#8C2332 · primary</div></div>
+    <div class="col"><div class="c" style="background:#C9A36A"></div><div class="t"><b>Gold</b>#C9A36A · accent</div></div>
+    <div class="col"><div class="c" style="background:#F5F0EB"></div><div class="t"><b>Cream</b>#F5F0EB · surface</div></div>
+    <div class="col"><div class="c" style="background:#2B2B2B"></div><div class="t"><b>Charcoal</b>#2B2B2B · text</div></div>
+  </div>
+  <div class="cols">
+    <div class="feat"><span class="e">💸</span><h3>Cut OTA commissions</h3><p>Drive direct bookings with member-only rates and save 15–20% per reservation.</p></div>
+    <div class="feat"><span class="e">⭐</span><h3>Loyalty & repeat stays</h3><p>K Rewards points and tiers keep guests coming back to you, not Booking.com.</p></div>
+    <div class="feat"><span class="e">🛎️</span><h3>Service in one tap</h3><p>Rooms, dining, spa, events, concierge and check-in — unified in one place.</p></div>
+    <div class="feat"><span class="e">🎨</span><h3>You stay in control</h3><p>Marketing edits content, offers and prices live — no developer needed.</p></div>
+  </div>
+</div></section>
+
+<!-- JOURNEY -->
+<section id="journey"><div class="wrap reveal">
+  <div class="kick">Guest journey</div>
+  <h2 class="big">From discovery to check-out — seamless.</h2>
+  <div class="journey">
+    <div class="step"><div class="num">1</div><h4>Discover</h4><p>Browse rooms, offers, dining & spa in a beautiful branded app.</p></div>
+    <div class="step"><div class="num">2</div><h4>Book</h4><p>Pick dates, apply a promo, pay by card, Apple Pay or Benefit.</p></div>
+    <div class="step"><div class="num">3</div><h4>Pre-arrival</h4><p>A reminder 3 hours before, with directions & mobile check-in.</p></div>
+    <div class="step"><div class="num">4</div><h4>Stay</h4><p>Digital key, room service, concierge chat, spa & dining booking.</p></div>
+    <div class="step"><div class="num">5</div><h4>After</h4><p>Express check-out, earn points, leave a review, re-book faster.</p></div>
+  </div>
+</div></section>
+
+<!-- APP WALKTHROUGH -->
+<section id="app"><div class="wrap reveal">
+  <div class="kick">The guest app · page by page</div>
+  <h2 class="big">Every page, every service.</h2>
+  <p class="lead">Everything from thekhotel.com — rooms, four dining outlets, spa, meetings & events, offers and services — plus loyalty, concierge and mobile check-in.</p>
+
+  <!-- Home -->
+  <div class="pagerow">
+    <div class="phone"><div class="pscr">
+      <div class="m-bar"></div>
+      <div class="m-hero" style="background-image:linear-gradient(0deg,rgba(110,26,39,.75),transparent),url('https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500&q=80')"><div><div class="e">JUFFAIR · BAHRAIN</div><h6>Stay in Color.</h6></div></div>
+      <div class="m-grid">
+        <div class="m-tile"><span class="e">🛏️</span>Rooms</div><div class="m-tile"><span class="e">🍽️</span>Dining</div><div class="m-tile"><span class="e">💆</span>Spa</div><div class="m-tile"><span class="e">🎉</span>Events</div>
+        <div class="m-tile"><span class="e">🏷️</span>Offers</div><div class="m-tile"><span class="e">📞</span>Concierge</div><div class="m-tile"><span class="e">⭐</span>Rewards</div><div class="m-tile"><span class="e">📍</span>More</div>
+      </div>
+      <div class="m-card"><div class="i" style="background-image:url('https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400&q=80')"></div><div class="t"><h6>Staycation</h6><div class="p">BHD 49 <small>NET / night</small></div></div></div>
+    </div></div>
+    <div class="pside">
+      <h3>🏠 Home</h3>
+      <div class="tagrow"><span class="tg">Parallax hero</span><span class="tg">Service grid</span><span class="tg">Offers carousel</span></div>
+      <ul><li>Search bar that opens the booking flow</li><li>One-tap access to all 8 service areas</li><li>Featured offers, rooms & dining previews</li><li>Notification bell + menu</li></ul>
+    </div>
+  </div>
+
+  <!-- Rooms -->
+  <div class="pagerow rev">
+    <div class="phone"><div class="pscr">
+      <div class="m-bar"></div>
+      <div style="padding:12px 12px 4px;font-family:var(--serif);color:var(--burgundy-d);font-size:14px">Rooms & Suites</div>
+      <div class="m-row"><div class="th" style="background-image:url('https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=300&q=80')"></div><div style="flex:1"><h6>Deluxe Room</h6><small>39 m² · King/Twin</small></div><div class="p">BHD 42</div></div>
+      <div class="m-row"><div class="th" style="background-image:url('https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=300&q=80')"></div><div style="flex:1"><h6>Junior King Suite</h6><small>72 m²</small></div><div class="p">BHD 65</div></div>
+      <div class="m-row"><div class="th" style="background-image:url('https://images.unsplash.com/photo-1591088398332-8a7791972843?w=300&q=80')"></div><div style="flex:1"><h6>Premium Suite</h6><small>72 m²</small></div><div class="p">BHD 78</div></div>
+      <div class="m-row"><div class="th" style="background-image:url('https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=300&q=80')"></div><div style="flex:1"><h6>Senior Suite</h6><small>110 m² · 2 BR</small></div><div class="p">BHD 120</div></div>
+    </div></div>
+    <div class="pside">
+      <h3>🛏️ Rooms & Suites</h3>
+      <div class="tagrow"><span class="tg">All 5 types</span><span class="tg">Live rates</span><span class="tg">Detail + gallery</span></div>
+      <ul><li>Deluxe, Junior King, Premium, Royal & Senior Suite</li><li>Size, bed, view, amenities & photos per room</li><li>Real-time availability and price</li><li>"Select dates & book" straight into checkout</li></ul>
+    </div>
+  </div>
+
+  <!-- Dining + Spa -->
+  <div class="pagerow">
+    <div class="phone"><div class="pscr">
+      <div class="m-bar"></div>
+      <div style="padding:12px 12px 4px;font-family:var(--serif);color:var(--burgundy-d);font-size:14px">Dining</div>
+      <div class="m-card"><div class="i" style="background-image:url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&q=80')"></div><div class="t"><h6>Kolors Restaurant</h6><small>International buffet</small></div></div>
+      <div class="m-card"><div class="i" style="background-image:url('https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=400&q=80')"></div><div class="t"><h6>The K Lounge</h6><small>Coffee & afternoon tea</small></div></div>
+      <div class="m-btn">Reserve a table · Order to room</div>
+    </div></div>
+    <div class="pside">
+      <h3>🍽️ Dining &nbsp;·&nbsp; 💆 Spa & Wellness</h3>
+      <div class="tagrow"><span class="tg">4 outlets</span><span class="tg">Table booking</span><span class="tg">Room service</span><span class="tg">Spa booking</span></div>
+      <ul><li>Kolors, The K Lounge, Champions & Pool Terrace with menus</li><li>Reserve a table or order room service in-app</li><li>Spa: Thai massage, aromatherapy, sauna, steam, jacuzzi</li><li>Book a treatment by date & time</li></ul>
+    </div>
+  </div>
+
+  <!-- My Reservation (highlight) -->
+  <div class="pagerow rev">
+    <div class="phone"><div class="pscr">
+      <div class="m-bar"></div>
+      <div style="padding:10px 12px 0;font-family:var(--serif);color:var(--burgundy-d);font-size:14px">My Stay</div>
+      <div class="m-note">⏰ <b>Reminder:</b> we'll notify you 3 hours before arrival with check-in & directions.</div>
+      <div class="m-kcard"><div class="sh"></div><div class="conf">CONFIRMATION · KH-48213</div><h6>Deluxe King Room</h6><div class="meta"><div>23→25 Jun</div><div>2 nights</div><div>2+1 guests</div></div></div>
+      <div style="display:flex;gap:8px;margin:0 12px"><div class="m-btn" style="margin:0;flex:1;background:var(--gold);color:#3a2c14">🔑 Digital key</div><div class="m-btn" style="margin:0;flex:1;background:#fff;color:var(--burgundy);border:1px solid var(--burgundy)">💬 Concierge</div></div>
+    </div></div>
+    <div class="pside">
+      <h3>🛎️ My Reservation</h3>
+      <div class="tagrow"><span class="tg">How the guest sees it</span><span class="tg">Timeline</span><span class="tg">Digital key</span><span class="tg">Wallet</span></div>
+      <ul><li>Confirmation number, room, dates, guests at a glance</li><li>Stay timeline: confirmed → check-in → reminder → check-out</li><li>Mobile check-in & digital room key</li><li>Modify, add to Apple/Google Wallet, contact concierge</li><li><b>3-hour pre-arrival reminder</b> shown right at the top</li></ul>
+    </div>
+  </div>
+
+  <!-- Concierge + Rewards -->
+  <div class="pagerow">
+    <div class="phone"><div class="pscr">
+      <div class="m-bar"></div>
+      <div style="padding:8px 12px 0;font-family:var(--serif);color:var(--burgundy-d);font-size:13px">Concierge · ● Online</div>
+      <div class="m-chat">
+        <div class="m-bub them">Welcome to The K Hotel 👋 How can we help?</div>
+        <div class="m-bub me">Request airport shuttle 🚐</div>
+        <div class="m-bub them">Absolutely — arranging that now ✅</div>
+        <div class="m-bub me">Late check-out please 🕐</div>
+        <div class="m-bub them">Done! Noted on your booking 🛎️</div>
+      </div>
+    </div></div>
+    <div class="pside">
+      <h3>💬 Concierge &nbsp;·&nbsp; ⭐ K Rewards</h3>
+      <div class="tagrow"><span class="tg">Live chat</span><span class="tg">WhatsApp</span><span class="tg">Loyalty tiers</span><span class="tg">Notifications</span></div>
+      <ul><li>One-tap requests: shuttle, taxi, housekeeping, late check-out</li><li>K Rewards points, Silver→Gold tiers & member rates</li><li>Notification centre for offers, updates & reminders</li><li>Account, payment methods, favorites & reviews</li></ul>
+    </div>
+  </div>
+</div></section>
+
+<!-- REMINDER FEATURE -->
+<section id="reminder"><div class="wrap reveal">
+  <div class="kick">Smart notifications</div>
+  <h2 class="big">A reminder 3 hours before arrival.</h2>
+  <p class="lead">Guests automatically receive a push reminder before their reservation — with directions, weather and a "check in now" button. Fully configurable by your team (3 hours, 6 hours or 1 day) from the dashboard.</p>
+  <div class="cols">
+    <div class="feat"><span class="e">⏰</span><h3>Pre-arrival reminder</h3><p>"Your stay is almost here — check-in opens in 3 hours."</p></div>
+    <div class="feat"><span class="e">🏷️</span><h3>Offer campaigns</h3><p>Push a Staycation deal to all users or a chosen segment.</p></div>
+    <div class="feat"><span class="e">⭐</span><h3>Loyalty nudges</h3><p>"You earned 240 points — 760 to Gold tier."</p></div>
+    <div class="feat"><span class="e">📝</span><h3>Post-stay feedback</h3><p>Auto-request a review after check-out to lift ratings.</p></div>
+  </div>
+</div></section>
+
+<!-- ADMIN / BACK-OFFICE -->
+<section id="admin"><div class="wrap reveal">
+  <div class="kick">The back-office · for non-developers</div>
+  <h2 class="big">Run the whole app without code.</h2>
+  <p class="lead">A simple dashboard where your team edits content, creates promotions, changes prices, manages guests and sends notifications — with a live preview before anything goes live.</p>
+
+  <!-- Page editor shot -->
+  <div class="pagerow">
+    <div class="dashshot" style="flex:1;min-width:300px">
+      <div class="bar"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i></div>
+      <div style="padding:12px;background:var(--cream)">
+        <div style="font-size:10px;color:var(--muted);margin-bottom:8px">Page Editor — drag blocks, edit, preview & publish</div>
+        <div class="editorshot">
+          <div class="pp"><b style="font-size:8px">BLOCKS</b><div class="bc">🖼️ Hero</div><div class="bc">✍️ Text</div><div class="bc">🏷️ Offer</div><div class="bc">🛏️ Rooms</div><div class="bc">🔘 Button</div></div>
+          <div class="cv"><div class="mini"><div class="ms"><div class="m-hero" style="height:60px;background-image:linear-gradient(0deg,rgba(110,26,39,.7),transparent),url('https://images.unsplash.com/photo-1566073771259-6a8506099945?w=300&q=80')"><div><div class="e" style="font-size:6px">JUFFAIR</div><h6 style="font-size:11px">Stay in Color.</h6></div></div><div style="padding:8px;font-size:7px;color:#5b524c">Award-winning 4-star luxury in Juffair.</div><div class="m-card" style="margin:6px 8px"><div class="i" style="height:34px;background-image:url('https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=200&q=80')"></div><div class="t" style="padding:5px"><h6 style="font-size:8px">Staycation</h6></div></div></div></div></div>
+          <div class="pp"><b style="font-size:8px">PROPERTIES</b><div style="margin-top:6px;font-size:7px;color:var(--muted)">Headline</div><div class="bc" style="background:#fff;border:1px solid var(--line)">Stay in Color.</div><div style="font-size:7px;color:var(--muted)">Accent</div><div style="display:flex;gap:3px;margin:3px 0"><span style="width:12px;height:12px;border-radius:4px;background:#8C2332;outline:2px solid var(--burgundy);outline-offset:1px"></span><span style="width:12px;height:12px;border-radius:4px;background:#C9A36A"></span><span style="width:12px;height:12px;border-radius:4px;background:#2B2B2B"></span></div><div style="display:flex;gap:4px;margin-top:8px"><span style="flex:1;background:#fff;border:1px solid var(--burgundy);color:var(--burgundy);border-radius:5px;text-align:center;font-size:7px;padding:4px">Preview</span><span style="flex:1;background:var(--gold);color:#3a2c14;border-radius:5px;text-align:center;font-size:7px;padding:4px">Publish</span></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="pside">
+      <h3>🎨 Page / Section editor</h3>
+      <div class="tagrow"><span class="tg">Drag-drop blocks</span><span class="tg">Edit text & images</span><span class="tg">Live preview</span><span class="tg">Draft → Publish</span></div>
+      <ul><li>Add hero, text, offer, room, gallery, button or map blocks</li><li>Type your own text and upload images per block</li><li>See exactly how it looks on phone & web before publishing</li><li>Preview mode + one-tap publish, with version rollback</li></ul>
+    </div>
+  </div>
+
+  <!-- Promotions + pricing shot -->
+  <div class="pagerow rev">
+    <div class="dashshot" style="flex:1;min-width:300px">
+      <div class="bar"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i></div>
+      <div class="dd">
+        <div class="sb"><div class="k"><sup style="font-size:7px">THE</sup>K</div><div class="i">📊 Dashboard</div><div class="i on">🏷️ Promotions</div><div class="i">💰 Pricing</div><div class="i">👥 Guests</div></div>
+        <div class="bd">
+          <div style="font-size:9px;color:var(--muted);margin-bottom:6px">Promotions — add, edit & auto-expire</div>
+          <table><tr><th>Offer</th><th>Code</th><th>Price</th><th>Status</th></tr>
+            <tr><td>Staycation</td><td>KSTAY10</td><td>BHD 49</td><td><span class="tg2 live">Live</span></td></tr>
+            <tr><td>Daycation</td><td>KDAY</td><td>BHD 25</td><td><span class="tg2 live">Live</span></td></tr>
+            <tr><td>Day Use</td><td>DAYUSE47</td><td>BHD 18</td><td><span class="tg2 draft">Draft</span></td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="pside">
+      <h3>🏷️ Promotions &nbsp;·&nbsp; 💰 Pricing</h3>
+      <div class="tagrow"><span class="tg">Add promotion</span><span class="tg">Promo codes</span><span class="tg">Validity dates</span><span class="tg">Rate table</span></div>
+      <ul><li>Create an offer with image, text, price, code & dates</li><li>Auto-expire offers; publish straight to the app</li><li>Edit weekday/weekend rates per room type & season</li><li>Save → syncs to the app and channel manager</li></ul>
+    </div>
+  </div>
+
+  <!-- Guests / CRM shot -->
+  <div class="pagerow">
+    <div class="dashshot" style="flex:1;min-width:300px">
+      <div class="bar"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i></div>
+      <div class="dd">
+        <div class="sb"><div class="k"><sup style="font-size:7px">THE</sup>K</div><div class="i">📊 Dashboard</div><div class="i">🏷️ Promotions</div><div class="i on">👥 Guests</div><div class="i">🔔 Notifications</div></div>
+        <div class="bd">
+          <div style="font-size:9px;color:var(--muted);margin-bottom:6px">Guests & CRM — view users, send reset links</div>
+          <table><tr><th>Guest</th><th>Tier</th><th>Actions</th></tr>
+            <tr><td>Ahmed Al-Rawi</td><td><span class="tg2 draft">Silver</span></td><td><span class="rowact">Send reset link</span></td></tr>
+            <tr><td>Sara Mansour</td><td><span class="tg2 live">Gold</span></td><td><span class="rowact">Send reset link</span></td></tr>
+            <tr><td>James Okoro</td><td><span class="tg2 draft">Silver</span></td><td><span class="rowact">Send reset link</span></td></tr>
+          </table>
+          <div class="statcards" style="margin-top:8px"><div class="sc"><div class="n">9.7k</div><div class="l">App users</div></div><div class="sc"><div class="n">78%</div><div class="l">Occupancy</div></div><div class="sc"><div class="n">186k</div><div class="l">Revenue BHD</div></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="pside">
+      <h3>👥 Guests & CRM</h3>
+      <div class="tagrow"><span class="tg">User list</span><span class="tg">Send reset link</span><span class="tg">Booking history</span><span class="tg">Segments</span></div>
+      <ul><li>See everyone registered in the app, searchable</li><li><b>Send a password-reset link</b> to any guest in one click</li><li>View each guest's bookings, tier & activity</li><li>Export, segment for campaigns & GDPR delete</li></ul>
+    </div>
+  </div>
+</div></section>
+
+<!-- RECOMMENDATIONS -->
+<section id="recs"><div class="wrap reveal">
+  <div class="kick">My recommendations · beyond your brief</div>
+  <h2 class="big">Ideas that make it exceptional.</h2>
+  <div class="recgrid">
+    <div class="rec"><span class="e">🔑</span><div><h4>Mobile check-in & digital key</h4><p>Skip the front desk; unlock the room from the phone.</p></div></div>
+    <div class="rec"><span class="e">⭐</span><div><h4>K Rewards loyalty</h4><p>Points & tiers that drive direct repeat bookings.</p></div></div>
+    <div class="rec"><span class="e">💬</span><div><h4>In-app & WhatsApp concierge</h4><p>Requests and support without a phone call.</p></div></div>
+    <div class="rec"><span class="e">🍽️</span><div><h4>In-app ordering</h4><p>Room service & table reservations, paid in-app.</p></div></div>
+    <div class="rec"><span class="e">🌐</span><div><h4>Arabic (RTL) + multi-currency</h4><p>Full bilingual experience for local & GCC guests.</p></div></div>
+    <div class="rec"><span class="e">🏨</span><div><h4>Multi-property ready</h4><p>One app & dashboard scales to every future K hotel.</p></div></div>
+    <div class="rec"><span class="e">🎟️</span><div><h4>Wallet pass</h4><p>Booking & key in Apple/Google Wallet with reminders.</p></div></div>
+    <div class="rec"><span class="e">📊</span><div><h4>Analytics & reports</h4><p>Revenue, occupancy, channel mix & campaign results.</p></div></div>
+    <div class="rec"><span class="e">🔗</span><div><h4>PMS / channel-manager sync</h4><p>Cloudbeds / SiteMinder keep availability accurate.</p></div></div>
+  </div>
+</div></section>
+
+<!-- ROADMAP -->
+<section id="roadmap"><div class="wrap reveal">
+  <div class="kick">Delivery</div>
+  <h2 class="big">A phased roadmap.</h2>
+  <div class="road">
+    <div class="phase"><div class="when">Phase 1 · ~4–6 wks</div><h4>Launch</h4><ul><li>Brand setup & design</li><li>Rooms, offers & booking + payment</li><li>My Reservation & notifications</li><li>Core dashboard (content, offers, prices, users)</li></ul></div>
+    <div class="phase"><div class="when">Phase 2 · ~6–10 wks</div><h4>Engage</h4><ul><li>Dining, spa & events booking</li><li>Concierge chat & K Rewards</li><li>3-hour reminder automation</li><li>Arabic / RTL + analytics</li></ul></div>
+    <div class="phase"><div class="when">Phase 3 · later</div><h4>Scale</h4><ul><li>Mobile check-in & digital key</li><li>In-app ordering & Wallet pass</li><li>PMS / channel-manager integration</li><li>Multi-property rollout</li></ul></div>
+  </div>
+
+  <table class="cost">
+    <tr><th>Option</th><th>Upfront</th><th>Ongoing</th><th>Time to launch</th><th>Best for</th></tr>
+    <tr><td><b>Build from scratch</b> (custom, this design)</td><td>$15k–$90k</td><td>$150–$1,000+/mo</td><td>3–6 months</td><td>Full control, exact brand, multi-property</td></tr>
+    <tr><td><b>AppMySite / no-code</b> (WordPress-based)</td><td>~$0–$3k</td><td>~$60–$250/mo</td><td>1–4 weeks</td><td>Fast, cheap launch & validation</td></tr>
+  </table>
+  <div class="note-box">💡 <b>Recommended path:</b> launch fast on no-code to validate demand, then invest in the custom build (this design) for the full dashboard and multi-property scale.</div>
+</div></section>
+
+<!-- CTA -->
+<div class="cta wrap reveal">
+  <h2>See it live.</h2>
+  <p>Open the interactive prototypes that go with this presentation.</p>
+  <a class="btn gold" href="K-Hotel-App.html">📱 Open the guest app</a>
+  <a class="btn" href="K-Hotel-Dashboard.html">🖥️ Open the dashboard</a>
+</div>
+
+<footer>The K Hotel · App concept & presentation · Burgundy #8C2332 · Gold #C9A36A · Cream #F5F0EB · Bahrain</footer>
+
+<script>
+const prog=document.getElementById('prog');
+addEventListener('scroll',()=>{const h=document.documentElement;prog.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in');}),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>

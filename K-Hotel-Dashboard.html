@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>The K Hotel — Admin Dashboard</title>
+<style>
+:root{
+  --burgundy:#8C2332;--burgundy-d:#6E1A27;--gold:#C9A36A;--cream:#F7F3EE;
+  --charcoal:#2B2B2B;--muted:#8a8079;--line:#ece4db;--ok:#2e8b57;--white:#fff;
+  --serif:"Playfair Display",Georgia,serif;--sans:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --sh:0 8px 24px rgba(60,20,25,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--sans);background:#e7ded4;color:var(--charcoal);padding:24px;display:flex;flex-direction:column;align-items:center;gap:12px;}
+.stage h1{font-family:var(--serif);color:var(--burgundy);text-align:center;font-size:24px;}
+.stage p{text-align:center;color:var(--muted);font-size:13px;}
+
+/* browser frame */
+.browser{width:min(1180px,100%);background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 30px 70px rgba(60,20,25,.35);}
+.chrome{height:42px;background:#efe7de;display:flex;align-items:center;gap:8px;padding:0 16px;border-bottom:1px solid var(--line);}
+.dot{width:12px;height:12px;border-radius:50%;}
+.dot.r{background:#ff5f57;}.dot.y{background:#febc2e;}.dot.g{background:#28c840;}
+.url{flex:1;margin-left:14px;background:#fff;border-radius:8px;height:26px;display:flex;align-items:center;padding:0 12px;font-size:12px;color:var(--muted);}
+
+.app{display:flex;height:720px;}
+/* sidebar */
+.side{width:230px;background:linear-gradient(180deg,var(--burgundy),var(--burgundy-d));color:#fff;padding:18px 12px;flex:0 0 auto;overflow-y:auto;}
+.brand{display:flex;align-items:center;gap:10px;padding:6px 10px 16px;}
+.brand .k{font-family:var(--serif);font-size:26px;font-weight:800;}
+.brand .k sup{font-size:11px;}
+.brand small{font-size:9px;letter-spacing:3px;opacity:.8;display:block;}
+.nav-i{display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:10px;font-size:13px;cursor:pointer;opacity:.82;transition:.15s;margin-bottom:2px;}
+.nav-i:hover{opacity:1;background:rgba(255,255,255,.08);}
+.nav-i.on{background:rgba(255,255,255,.15);opacity:1;font-weight:700;}
+.nav-i .e{width:20px;text-align:center;}
+.side .grp{font-size:10px;letter-spacing:1.5px;opacity:.5;padding:14px 12px 6px;text-transform:uppercase;}
+
+/* main */
+.main{flex:1;background:var(--cream);overflow-y:auto;}
+.topbar{height:60px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:sticky;top:0;z-index:20;}
+.topbar h2{font-family:var(--serif);font-size:20px;color:var(--burgundy-d);}
+.tb-r{display:flex;align-items:center;gap:14px;}
+.search{background:var(--cream);border:1px solid var(--line);border-radius:20px;padding:8px 14px;font-size:12px;color:var(--muted);width:200px;}
+.av{width:36px;height:36px;border-radius:50%;background:var(--burgundy);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--serif);}
+.page{padding:24px;}
+.page{display:none;}.page.on{display:block;animation:fade .3s;}
+@keyframes fade{from{opacity:0;transform:translateY(6px);}}
+
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:22px;}
+.stat{background:#fff;border-radius:14px;padding:18px;box-shadow:var(--sh);}
+.stat .l{font-size:12px;color:var(--muted);}
+.stat .n{font-size:26px;font-weight:800;color:var(--burgundy);margin:6px 0 2px;font-family:var(--serif);}
+.stat .d{font-size:11px;color:var(--ok);}
+.panel{background:#fff;border-radius:14px;box-shadow:var(--sh);margin-bottom:20px;}
+.panel .ph{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid var(--line);}
+.panel .ph h3{font-size:15px;font-weight:800;}
+.panel .pb{padding:18px 20px;}
+.btn{background:var(--burgundy);color:#fff;border:none;border-radius:9px;padding:9px 16px;font-size:13px;font-weight:700;cursor:pointer;transition:.15s;}
+.btn:hover{background:var(--burgundy-d);}
+.btn.gold{background:var(--gold);color:#3a2c14;}
+.btn.sm{padding:6px 12px;font-size:12px;}
+.btn.gh{background:#fff;color:var(--burgundy);border:1px solid var(--burgundy);}
+
+table{width:100%;border-collapse:collapse;}
+th{text-align:left;font-size:11px;letter-spacing:.5px;color:var(--muted);text-transform:uppercase;padding:10px 20px;border-bottom:1px solid var(--line);}
+td{padding:13px 20px;font-size:13px;border-bottom:1px solid var(--line);}
+tr:last-child td{border-bottom:none;}
+.tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;}
+.tag.live{background:#e6f4ec;color:var(--ok);}
+.tag.draft{background:#fdf0e3;color:#b07c2a;}
+.tag.exp{background:#f4e6e6;color:#b04a4a;}
+.row-act{color:var(--burgundy);cursor:pointer;font-weight:700;font-size:12px;}
+
+/* charts */
+.bars{display:flex;align-items:flex-end;gap:10px;height:140px;padding-top:10px;}
+.bar{flex:1;background:linear-gradient(var(--gold),var(--burgundy));border-radius:6px 6px 0 0;position:relative;transition:.6s;}
+.bar span{position:absolute;bottom:-20px;left:0;right:0;text-align:center;font-size:10px;color:var(--muted);}
+
+/* CONTENT EDITOR layout */
+.editor{display:grid;grid-template-columns:200px 1fr 260px;gap:16px;}
+.ep{background:#fff;border-radius:14px;box-shadow:var(--sh);overflow:hidden;}
+.ep h4{font-size:12px;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);padding:14px 16px;border-bottom:1px solid var(--line);}
+.blockchip{display:flex;align-items:center;gap:10px;padding:11px 16px;font-size:13px;cursor:grab;border-bottom:1px solid var(--line);transition:.15s;}
+.blockchip:hover{background:var(--cream);}
+.blockchip .e{font-size:16px;}
+/* canvas = phone preview */
+.canvas{background:var(--cream);border-radius:14px;box-shadow:var(--sh);padding:20px;display:flex;flex-direction:column;align-items:center;}
+.cvtop{width:100%;display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.cvtop .seg{display:flex;background:#fff;border-radius:8px;padding:3px;border:1px solid var(--line);}
+.cvtop .seg button{border:none;background:none;padding:6px 12px;font-size:12px;border-radius:6px;cursor:pointer;color:var(--muted);}
+.cvtop .seg button.on{background:var(--burgundy);color:#fff;font-weight:700;}
+.mini{width:280px;background:#000;border-radius:34px;padding:9px;}
+.miniscr{background:var(--cream);border-radius:26px;overflow:hidden;min-height:480px;}
+.mblk{position:relative;cursor:pointer;border:2px solid transparent;transition:.15s;}
+.mblk:hover{border-color:var(--gold);}
+.mblk.sel{border-color:var(--burgundy);}
+.mblk .lbl{position:absolute;top:4px;left:4px;background:var(--burgundy);color:#fff;font-size:9px;padding:2px 7px;border-radius:5px;opacity:0;transition:.15s;}
+.mblk:hover .lbl,.mblk.sel .lbl{opacity:1;}
+.mhero{height:150px;background:linear-gradient(0deg,rgba(110,26,39,.7),transparent),url('https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500&q=80') center/cover;display:flex;align-items:flex-end;padding:14px;color:#fff;}
+.mhero .e{font-size:9px;letter-spacing:2px;color:var(--gold);font-weight:800;}
+.mhero h5{font-family:var(--serif);font-size:20px;}
+.mtext{padding:14px;font-size:11px;color:#5b524c;line-height:1.5;}
+.moffer{margin:0 14px 14px;border-radius:12px;overflow:hidden;box-shadow:var(--sh);background:#fff;}
+.moffer .i{height:80px;background:url('https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400&q=80') center/cover;}
+.moffer .t{padding:10px;}
+.moffer .t h6{font-family:var(--serif);font-size:14px;}
+.moffer .t .p{color:var(--burgundy);font-weight:800;font-size:12px;}
+/* props panel */
+.field{padding:0 16px 14px;}
+.field label{font-size:11px;font-weight:700;color:var(--muted);display:block;margin:14px 0 5px;}
+.field input,.field textarea,.field select{width:100%;border:1px solid var(--line);border-radius:8px;padding:9px 11px;font-size:13px;font-family:inherit;}
+.field textarea{min-height:64px;resize:vertical;}
+.swatches{display:flex;gap:8px;}
+.sw{width:26px;height:26px;border-radius:7px;cursor:pointer;border:2px solid #fff;box-shadow:0 0 0 1px var(--line);}
+.sw.sel{box-shadow:0 0 0 2px var(--burgundy);}
+.toolbar{display:flex;gap:8px;}
+.statusln{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);}
+.live-dot{width:8px;height:8px;border-radius:50%;background:#b07c2a;}
+
+.modal{position:fixed;inset:0;background:rgba(40,15,18,.5);display:none;align-items:center;justify-content:center;z-index:200;}
+.modal.on{display:flex;animation:fade .2s;}
+.modal .box{background:#fff;border-radius:16px;width:440px;max-width:92vw;overflow:hidden;box-shadow:0 30px 70px rgba(0,0,0,.4);}
+.modal .mh{padding:18px 22px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;}
+.modal .mh h3{font-family:var(--serif);color:var(--burgundy-d);font-size:18px;}
+.modal .mb{padding:20px 22px;max-height:60vh;overflow-y:auto;}
+.modal .mf{padding:14px 22px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:10px;}
+.x{cursor:pointer;font-size:20px;color:var(--muted);background:none;border:none;}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--burgundy-d);color:#fff;padding:13px 20px;border-radius:12px;font-size:13px;opacity:0;pointer-events:none;transition:.3s;z-index:300;box-shadow:0 12px 30px rgba(0,0,0,.3);}
+.toast.on{opacity:1;transform:translateX(-50%);}
+.legend{font-size:11px;color:#7a6f66;text-align:center;max-width:760px;}
+.range{width:90px;}
+.muted{color:var(--muted);font-size:12px;}
+</style>
+</head>
+<body>
+<div class="stage"><h1>The K Hotel — Back-Office Dashboard</h1><p>For non-developers · edit content, offers, prices & guests with live preview</p></div>
+
+<div class="browser">
+  <div class="chrome"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><div class="url">🔒 admin.thekhotel.com / dashboard</div></div>
+  <div class="app">
+    <!-- SIDEBAR -->
+    <div class="side">
+      <div class="brand"><div><div class="k"><sup>THE</sup>K</div><small>ADMIN</small></div></div>
+      <div class="nav-i on" data-go="dashboard"><span class="e">📊</span>Dashboard</div>
+      <div class="nav-i" data-go="reservations"><span class="e">📅</span>Reservations</div>
+      <div class="grp">Content</div>
+      <div class="nav-i" data-go="editor"><span class="e">🎨</span>Page Editor</div>
+      <div class="nav-i" data-go="promos"><span class="e">🏷️</span>Promotions</div>
+      <div class="nav-i" data-go="pricing"><span class="e">💰</span>Pricing & Rates</div>
+      <div class="nav-i" data-go="catalog"><span class="e">🛏️</span>Rooms & Catalog</div>
+      <div class="grp">People</div>
+      <div class="nav-i" data-go="users"><span class="e">👥</span>Guests & CRM</div>
+      <div class="nav-i" data-go="notif"><span class="e">🔔</span>Notifications</div>
+      <div class="grp">System</div>
+      <div class="nav-i" data-go="settings"><span class="e">⚙️</span>Settings & Brand</div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+      <div class="topbar">
+        <h2 id="ptitle">Dashboard</h2>
+        <div class="tb-r"><input class="search" placeholder="🔍 Search…"/><span class="muted">The K Hotel · Bahrain ▾</span><div class="av">A</div></div>
+      </div>
+
+      <!-- DASHBOARD -->
+      <div class="page on" id="dashboard">
+        <div class="cards">
+          <div class="stat"><div class="l">Bookings (30d)</div><div class="n">1,284</div><div class="d">▲ 12% vs last month</div></div>
+          <div class="stat"><div class="l">Revenue (BHD)</div><div class="n">186.4k</div><div class="d">▲ 9%</div></div>
+          <div class="stat"><div class="l">Occupancy</div><div class="n">78%</div><div class="d">▲ 4%</div></div>
+          <div class="stat"><div class="l">App users</div><div class="n">9,742</div><div class="d">▲ 320 new</div></div>
+        </div>
+        <div class="panel">
+          <div class="ph"><h3>Bookings this week</h3><span class="muted">Direct vs OTA</span></div>
+          <div class="pb"><div class="bars">
+            <div class="bar" style="height:55%"><span>Mon</span></div><div class="bar" style="height:70%"><span>Tue</span></div><div class="bar" style="height:48%"><span>Wed</span></div><div class="bar" style="height:85%"><span>Thu</span></div><div class="bar" style="height:95%"><span>Fri</span></div><div class="bar" style="height:78%"><span>Sat</span></div><div class="bar" style="height:62%"><span>Sun</span></div>
+          </div></div>
+        </div>
+        <div class="panel">
+          <div class="ph"><h3>Recent reservations</h3><span class="row-act" data-go="reservations">View all →</span></div>
+          <table><tr><th>Guest</th><th>Room</th><th>Dates</th><th>Status</th><th>Total</th></tr>
+            <tr><td>Sara Mansour</td><td>Premium Suite</td><td>23–25 Jun</td><td><span class="tag live">Confirmed</span></td><td>BHD 156</td></tr>
+            <tr><td>James Okoro</td><td>Deluxe King</td><td>24–26 Jun</td><td><span class="tag draft">Pending</span></td><td>BHD 92</td></tr>
+            <tr><td>Fatima Al-Sayed</td><td>Senior Suite</td><td>28 Jun–2 Jul</td><td><span class="tag live">Confirmed</span></td><td>BHD 480</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- RESERVATIONS -->
+      <div class="page" id="reservations">
+        <div class="panel">
+          <div class="ph"><h3>All reservations</h3><div class="toolbar"><button class="btn gh sm">Filter</button><button class="btn sm">Export</button></div></div>
+          <table><tr><th>Conf #</th><th>Guest</th><th>Room</th><th>Dates</th><th>Status</th><th></th></tr>
+            <tr><td>KH-48213</td><td>Ahmed Al-Rawi</td><td>Deluxe King</td><td>23–25 Jun</td><td><span class="tag live">Confirmed</span></td><td><span class="row-act">Manage</span></td></tr>
+            <tr><td>KH-48210</td><td>Sara Mansour</td><td>Premium Suite</td><td>23–25 Jun</td><td><span class="tag live">Confirmed</span></td><td><span class="row-act">Manage</span></td></tr>
+            <tr><td>KH-48207</td><td>James Okoro</td><td>Deluxe King</td><td>24–26 Jun</td><td><span class="tag draft">Pending</span></td><td><span class="row-act">Manage</span></td></tr>
+            <tr><td>KH-48190</td><td>Fatima Al-Sayed</td><td>Senior Suite</td><td>28 Jun–2 Jul</td><td><span class="tag live">Confirmed</span></td><td><span class="row-act">Manage</span></td></tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- PAGE EDITOR -->
+      <div class="page" id="editor">
+        <p class="muted" style="margin-bottom:14px">Drag blocks onto the screen, edit text & images on the right, then <b>Preview</b> and <b>Publish</b>. No code.</p>
+        <div class="editor">
+          <!-- block palette -->
+          <div class="ep">
+            <h4>Add blocks</h4>
+            <div class="blockchip"><span class="e">🖼️</span>Hero image</div>
+            <div class="blockchip"><span class="e">✍️</span>Text block</div>
+            <div class="blockchip"><span class="e">🏷️</span>Offer card</div>
+            <div class="blockchip"><span class="e">🛏️</span>Room list</div>
+            <div class="blockchip"><span class="e">🖼️</span>Gallery</div>
+            <div class="blockchip"><span class="e">🔘</span>Button / CTA</div>
+            <div class="blockchip"><span class="e">🍽️</span>Dining card</div>
+            <div class="blockchip"><span class="e">📍</span>Map block</div>
+          </div>
+          <!-- live phone preview -->
+          <div class="canvas">
+            <div class="cvtop">
+              <div class="statusln"><span class="live-dot" id="ldot"></span><span id="lstate">Draft — unpublished changes</span></div>
+              <div class="seg"><button class="on">📱 Phone</button><button>💻 Web</button></div>
+            </div>
+            <div class="mini"><div class="miniscr">
+              <div class="mblk sel" onclick="sel(this)"><span class="lbl">Hero</span><div class="mhero"><div><div class="e" id="pvKick">JUFFAIR · BAHRAIN</div><h5 id="pvTitle">Stay in Color.</h5></div></div></div>
+              <div class="mblk" onclick="sel(this)"><span class="lbl">Text</span><div class="mtext" id="pvText">Award-winning 4-star luxury in the heart of Juffair — 240 rooms, 4 dining outlets, spa & events.</div></div>
+              <div class="mblk" onclick="sel(this)"><span class="lbl">Offer card</span><div class="moffer"><div class="i"></div><div class="t"><h6>Staycation</h6><div class="p">BHD 49 NET / night</div></div></div></div>
+            </div></div>
+          </div>
+          <!-- properties -->
+          <div class="ep">
+            <h4>Hero block · properties</h4>
+            <div class="field">
+              <label>Eyebrow</label><input id="inKick" value="JUFFAIR · BAHRAIN" oninput="document.getElementById('pvKick').textContent=this.value;markDraft()"/>
+              <label>Headline</label><input id="inTitle" value="Stay in Color." oninput="document.getElementById('pvTitle').textContent=this.value;markDraft()"/>
+              <label>Body text</label><textarea oninput="document.getElementById('pvText').textContent=this.value;markDraft()">Award-winning 4-star luxury in the heart of Juffair — 240 rooms, 4 dining outlets, spa & events.</textarea>
+              <label>Background image</label><button class="btn gh sm" style="width:100%">📤 Replace image</button>
+              <label>Accent color</label>
+              <div class="swatches"><span class="sw sel" style="background:#8C2332"></span><span class="sw" style="background:#C9A36A"></span><span class="sw" style="background:#2B2B2B"></span><span class="sw" style="background:#6E1A27"></span></div>
+            </div>
+            <div style="padding:14px 16px;border-top:1px solid var(--line);display:flex;gap:8px">
+              <button class="btn gh sm" style="flex:1" onclick="toast('Opening preview link…')">Preview</button>
+              <button class="btn gold" style="flex:1" onclick="publish()">Publish</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROMOTIONS -->
+      <div class="page" id="promos">
+        <div class="panel">
+          <div class="ph"><h3>Promotions & offers</h3><button class="btn" onclick="openModal()">＋ New promotion</button></div>
+          <table><tr><th>Offer</th><th>Code</th><th>Price</th><th>Valid until</th><th>Status</th><th></th></tr>
+            <tr><td>Staycation</td><td>KSTAY10</td><td>BHD 49 NET</td><td>31 Aug 2026</td><td><span class="tag live">Live</span></td><td><span class="row-act">Edit</span></td></tr>
+            <tr><td>Daycation</td><td>KDAY</td><td>BHD 25</td><td>30 Sep 2026</td><td><span class="tag live">Live</span></td><td><span class="row-act">Edit</span></td></tr>
+            <tr><td>Day Use Room</td><td>DAYUSE47</td><td>from BHD 18</td><td>31 Jul 2026</td><td><span class="tag draft">Draft</span></td><td><span class="row-act">Edit</span></td></tr>
+            <tr><td>Eid Special 2026</td><td>EID26</td><td>BHD 55</td><td>10 Apr 2026</td><td><span class="tag exp">Expired</span></td><td><span class="row-act">Edit</span></td></tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- PRICING -->
+      <div class="page" id="pricing">
+        <div class="panel">
+          <div class="ph"><h3>Room rates (BHD / night)</h3><div class="toolbar"><span class="muted">Season:</span><select style="border:1px solid var(--line);border-radius:8px;padding:6px 10px"><option>Summer 2026</option><option>Peak</option><option>Weekend</option></select><button class="btn sm" onclick="toast('Rates saved & synced to app + channel manager.')">Save changes</button></div></div>
+          <table><tr><th>Room type</th><th>Weekday</th><th>Weekend</th><th>Min stay</th><th>Status</th></tr>
+            <tr><td>Deluxe Room</td><td><input class="range" type="number" value="42"/></td><td><input class="range" type="number" value="48"/></td><td><input class="range" type="number" value="1"/></td><td><span class="tag live">Bookable</span></td></tr>
+            <tr><td>Junior King Suite</td><td><input class="range" type="number" value="65"/></td><td><input class="range" type="number" value="72"/></td><td><input class="range" type="number" value="1"/></td><td><span class="tag live">Bookable</span></td></tr>
+            <tr><td>Premium 1-BR Suite</td><td><input class="range" type="number" value="78"/></td><td><input class="range" type="number" value="86"/></td><td><input class="range" type="number" value="2"/></td><td><span class="tag live">Bookable</span></td></tr>
+            <tr><td>Royal 1-BR Suite</td><td><input class="range" type="number" value="95"/></td><td><input class="range" type="number" value="105"/></td><td><input class="range" type="number" value="2"/></td><td><span class="tag live">Bookable</span></td></tr>
+            <tr><td>Senior Suite</td><td><input class="range" type="number" value="120"/></td><td><input class="range" type="number" value="135"/></td><td><input class="range" type="number" value="2"/></td><td><span class="tag draft">Hidden</span></td></tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- CATALOG -->
+      <div class="page" id="catalog">
+        <div class="cards" style="grid-template-columns:repeat(3,1fr)">
+          <div class="stat"><div class="l">Room types</div><div class="n">5</div><div class="d muted" style="color:var(--muted)">240 rooms total</div></div>
+          <div class="stat"><div class="l">Dining outlets</div><div class="n">4</div><div class="d muted" style="color:var(--muted)">menus editable</div></div>
+          <div class="stat"><div class="l">Spa treatments</div><div class="n">12</div><div class="d muted" style="color:var(--muted)">bookable</div></div>
+        </div>
+        <div class="panel"><div class="ph"><h3>Manage catalog</h3><button class="btn sm">＋ Add item</button></div>
+          <table><tr><th>Item</th><th>Category</th><th>Price</th><th>In app</th></tr>
+            <tr><td>Thai Massage 60'</td><td>Spa</td><td>BHD 28</td><td><span class="tag live">Visible</span></td></tr>
+            <tr><td>Kolors breakfast buffet</td><td>Dining</td><td>BHD 6.5</td><td><span class="tag live">Visible</span></td></tr>
+            <tr><td>Grand Ballroom</td><td>Events</td><td>On request</td><td><span class="tag live">Visible</span></td></tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- USERS / CRM -->
+      <div class="page" id="users">
+        <div class="panel">
+          <div class="ph"><h3>Registered guests</h3><div class="toolbar"><input class="search" placeholder="🔍 Search guests…"/><button class="btn sm">Export CSV</button></div></div>
+          <table>
+            <tr><th>Guest</th><th>Email</th><th>Tier</th><th>Bookings</th><th>Last seen</th><th>Actions</th></tr>
+            <tr><td>Ahmed Al-Rawi</td><td>tahaalrawi127@gmail.com</td><td><span class="tag draft">Silver</span></td><td>5</td><td>Today</td><td><span class="row-act" onclick="toast('Password-reset link sent to Ahmed ✉️')">Send reset link</span></td></tr>
+            <tr><td>Sara Mansour</td><td>sara.m@example.com</td><td><span class="tag live">Gold</span></td><td>11</td><td>2h ago</td><td><span class="row-act" onclick="toast('Password-reset link sent to Sara ✉️')">Send reset link</span></td></tr>
+            <tr><td>James Okoro</td><td>j.okoro@example.com</td><td><span class="tag draft">Silver</span></td><td>2</td><td>Yesterday</td><td><span class="row-act" onclick="toast('Password-reset link sent to James ✉️')">Send reset link</span></td></tr>
+            <tr><td>Fatima Al-Sayed</td><td>fatima@example.com</td><td><span class="tag live">Gold</span></td><td>8</td><td>3 days ago</td><td><span class="row-act" onclick="toast('Password-reset link sent to Fatima ✉️')">Send reset link</span></td></tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- NOTIFICATIONS -->
+      <div class="page" id="notif">
+        <div class="panel">
+          <div class="ph"><h3>Push campaign</h3><button class="btn sm" onclick="toast('Campaign sent to 9,742 app users 🔔')">Send now</button></div>
+          <div class="pb">
+            <div class="field" style="padding:0"><label>Title</label><input value="Staycation ends soon — BHD 49 NET"/></div>
+            <div class="field" style="padding:0"><label>Message</label><textarea>Suite upgrade + breakfast + dining credit. Book before 31 Aug.</textarea></div>
+            <div class="field" style="padding:0"><label>Audience</label><select><option>All app users (9,742)</option><option>Silver tier</option><option>Lapsed guests (90d)</option></select></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="ph"><h3>Automated reminders</h3></div>
+          <div class="pb">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)"><div><b>Pre-arrival reminder</b><div class="muted">Send a check-in reminder before arrival</div></div><div style="display:flex;align-items:center;gap:10px"><select style="border:1px solid var(--line);border-radius:8px;padding:6px 10px"><option>3 hours before</option><option>1 day before</option><option>6 hours before</option></select><span class="tag live">On</span></div></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0"><div><b>Post-stay feedback</b><div class="muted">Request a review after check-out</div></div><span class="tag live">On</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="page" id="settings">
+        <div class="panel">
+          <div class="ph"><h3>Brand & appearance</h3><button class="btn sm" onclick="toast('Brand settings saved.')">Save</button></div>
+          <div class="pb">
+            <div class="field" style="padding:0"><label>Logo</label><button class="btn gh sm">📤 Upload logo</button></div>
+            <div class="field" style="padding:0"><label>Brand colors</label><div class="swatches"><span class="sw sel" style="background:#8C2332"></span><span class="sw" style="background:#C9A36A"></span><span class="sw" style="background:#F5F0EB"></span><span class="sw" style="background:#2B2B2B"></span></div></div>
+            <div class="field" style="padding:0"><label>Languages</label><select><option>English + العربية (RTL)</option><option>English only</option></select></div>
+            <div class="field" style="padding:0"><label>Default currency</label><select><option>BHD — Bahraini Dinar</option><option>USD</option></select></div>
+          </div>
+        </div>
+        <div class="panel"><div class="ph"><h3>Roles & access</h3><button class="btn sm">＋ Invite team</button></div>
+          <table><tr><th>Member</th><th>Role</th><th></th></tr>
+            <tr><td>Ahmed Al-Rawi</td><td>Super Admin</td><td><span class="row-act">Edit</span></td></tr>
+            <tr><td>Front Desk</td><td>Reservations only</td><td><span class="row-act">Edit</span></td></tr>
+            <tr><td>Marketing</td><td>Content & Promotions</td><td><span class="row-act">Edit</span></td></tr>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- NEW PROMOTION MODAL -->
+<div class="modal" id="modal">
+  <div class="box">
+    <div class="mh"><h3>New promotion</h3><button class="x" onclick="closeModal()">✕</button></div>
+    <div class="mb">
+      <div class="field" style="padding:0"><label>Offer name</label><input placeholder="e.g. Summer Escape"/></div>
+      <div class="field" style="padding:0"><label>Description</label><textarea placeholder="What's included…"></textarea></div>
+      <div style="display:flex;gap:12px"><div class="field" style="padding:0;flex:1"><label>Price (BHD)</label><input type="number" placeholder="49"/></div><div class="field" style="padding:0;flex:1"><label>Promo code</label><input placeholder="KSUMMER"/></div></div>
+      <div style="display:flex;gap:12px"><div class="field" style="padding:0;flex:1"><label>Valid from</label><input type="date"/></div><div class="field" style="padding:0;flex:1"><label>Valid until</label><input type="date"/></div></div>
+      <div class="field" style="padding:0"><label>Banner image</label><button class="btn gh sm" style="width:100%">📤 Upload image</button></div>
+    </div>
+    <div class="mf"><button class="btn gh" onclick="closeModal()">Save as draft</button><button class="btn gold" onclick="closeModal();toast('Promotion published to the app 🏷️')">Publish</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<p class="legend">Back-office prototype · Dashboard · Reservations · Page Editor (block builder + live preview + publish) · Promotions · Pricing · Catalog · Guests/CRM (send reset link) · Notifications & reminders · Settings/Brand & roles.</p>
+
+<script>
+document.querySelectorAll('.nav-i').forEach(n=>n.addEventListener('click',()=>{
+  document.querySelectorAll('.nav-i').forEach(x=>x.classList.remove('on'));
+  n.classList.add('on');
+  const id=n.dataset.go;
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  document.getElementById('ptitle').textContent=n.textContent.trim();
+}));
+function sel(el){document.querySelectorAll('.mblk').forEach(b=>b.classList.remove('sel'));el.classList.add('sel');}
+function openModal(){document.getElementById('modal').classList.add('on');}
+function closeModal(){document.getElementById('modal').classList.remove('on');}
+let t;
+function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('on');clearTimeout(t);t=setTimeout(()=>el.classList.remove('on'),2600);}
+function markDraft(){document.getElementById('lstate').textContent='Draft — unpublished changes';document.getElementById('ldot').style.background='#b07c2a';}
+function publish(){document.getElementById('lstate').textContent='Published — live in app';document.getElementById('ldot').style.background='#2e8b57';toast('Changes published to the app ✅');}
+</script>
+</body>
+</html>
