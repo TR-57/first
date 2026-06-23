@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The K Hotel — App Mockup</title>
+<style>
+  :root{
+    --burgundy:#8C2332;
+    --burgundy-dark:#6E1A27;
+    --gold:#C9A36A;
+    --cream:#F5F0EB;
+    --charcoal:#2B2B2B;
+    --muted:#8a8079;
+    --white:#ffffff;
+    --serif:"Playfair Display", Georgia, "Times New Roman", serif;
+    --sans:-apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:var(--sans);
+    background:#d9cfc6;
+    background:linear-gradient(135deg,#e9e1d8,#cdbfb2);
+    min-height:100vh;
+    display:flex;flex-wrap:wrap;gap:40px;
+    align-items:flex-start;justify-content:center;
+    padding:40px 20px;color:var(--charcoal);
+  }
+  .stage-title{width:100%;text-align:center;margin-bottom:8px;}
+  .stage-title h1{font-family:var(--serif);color:var(--burgundy);font-size:30px;font-weight:700;letter-spacing:.5px;}
+  .stage-title p{color:var(--muted);font-size:14px;margin-top:6px;}
+
+  /* phone frame */
+  .phone{
+    width:360px;height:760px;background:#111;border-radius:44px;
+    padding:12px;box-shadow:0 30px 60px rgba(0,0,0,.35);position:relative;flex:0 0 auto;
+  }
+  .screen{
+    width:100%;height:100%;background:var(--cream);border-radius:34px;overflow:hidden;
+    position:relative;display:flex;flex-direction:column;
+  }
+  .notch{position:absolute;top:14px;left:50%;transform:translateX(-50%);width:130px;height:24px;background:#111;border-radius:0 0 16px 16px;z-index:50;}
+  .statusbar{height:38px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;font-size:12px;font-weight:600;color:var(--white);position:absolute;top:0;left:0;right:0;z-index:40;}
+  .statusbar.dark{color:var(--charcoal);}
+
+  .scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+  .scroll::-webkit-scrollbar{display:none;}
+
+  /* views */
+  .view{display:none;height:100%;flex-direction:column;}
+  .view.active{display:flex;}
+
+  /* header */
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 10px;}
+  .logo{display:flex;flex-direction:column;align-items:center;line-height:1;}
+  .logo .ar{font-size:11px;color:var(--burgundy);margin-bottom:1px;}
+  .logo .k{font-family:var(--serif);font-size:26px;font-weight:800;color:var(--burgundy);letter-spacing:1px;}
+  .logo .k small{font-size:11px;vertical-align:super;letter-spacing:1px;}
+  .logo .sub{font-size:8px;letter-spacing:4px;color:var(--burgundy);margin-top:2px;}
+  .icon-btn{width:38px;height:38px;border-radius:50%;background:rgba(140,35,50,.08);display:flex;align-items:center;justify-content:center;color:var(--burgundy);font-size:17px;cursor:pointer;border:none;}
+
+  /* hero */
+  .hero{height:280px;margin:0 0 0;position:relative;display:flex;align-items:flex-end;color:#fff;
+    background:linear-gradient(180deg,rgba(0,0,0,.05),rgba(110,26,39,.75)),url('https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80') center/cover, var(--burgundy);}
+  .hero .h-inner{padding:20px;}
+  .hero .eyebrow{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-weight:700;}
+  .hero h2{font-family:var(--serif);font-size:28px;font-weight:700;margin:6px 0 4px;text-shadow:0 2px 8px rgba(0,0,0,.3);}
+  .hero p{font-size:13px;opacity:.92;}
+
+  .btn{background:var(--burgundy);color:#fff;border:none;border-radius:30px;padding:14px 22px;font-size:14px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:.15s;width:100%;justify-content:center;}
+  .btn:active{transform:scale(.98);}
+  .btn.gold{background:var(--gold);color:#3a2c14;}
+  .btn.outline{background:transparent;color:var(--burgundy);border:1.5px solid var(--burgundy);}
+
+  .section{padding:18px;}
+  .section h3{font-family:var(--serif);font-size:19px;color:var(--burgundy-dark);margin-bottom:2px;}
+  .section .row-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px;}
+  .section .row-head a{font-size:12px;color:var(--gold);font-weight:700;text-decoration:none;}
+
+  /* offers carousel */
+  .carousel{display:flex;gap:14px;overflow-x:auto;padding-bottom:6px;margin:0 -18px;padding-left:18px;padding-right:18px;}
+  .carousel::-webkit-scrollbar{display:none;}
+  .offer{flex:0 0 230px;border-radius:18px;overflow:hidden;background:#fff;box-shadow:0 8px 20px rgba(0,0,0,.08);cursor:pointer;}
+  .offer .img{height:120px;background-size:cover;background-position:center;position:relative;}
+  .offer .tag{position:absolute;top:10px;left:10px;background:var(--gold);color:#3a2c14;font-size:10px;font-weight:700;padding:4px 10px;border-radius:20px;letter-spacing:.5px;}
+  .offer .body{padding:12px 14px;}
+  .offer .body h4{font-family:var(--serif);font-size:16px;color:var(--charcoal);}
+  .offer .body p{font-size:11px;color:var(--muted);margin:4px 0 8px;line-height:1.4;}
+  .offer .price{font-size:13px;font-weight:700;color:var(--burgundy);}
+  .offer .price small{color:var(--muted);font-weight:400;}
+
+  /* room cards */
+  .room{display:flex;gap:14px;background:#fff;border-radius:16px;padding:12px;margin-bottom:12px;box-shadow:0 6px 16px rgba(0,0,0,.06);cursor:pointer;align-items:center;}
+  .room .thumb{width:92px;height:78px;border-radius:12px;background-size:cover;background-position:center;flex:0 0 auto;}
+  .room .meta{flex:1;}
+  .room .meta h4{font-family:var(--serif);font-size:16px;color:var(--charcoal);}
+  .room .meta .feat{font-size:11px;color:var(--muted);margin:3px 0 6px;}
+  .room .meta .p{font-size:14px;font-weight:700;color:var(--burgundy);}
+  .room .meta .p small{font-weight:400;color:var(--muted);font-size:11px;}
+  .chev{color:var(--gold);font-size:20px;}
+
+  /* bottom nav */
+  .tabbar{height:64px;background:#fff;border-top:1px solid #eadfd6;display:flex;align-items:center;justify-content:space-around;padding-bottom:6px;}
+  .tab{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:var(--muted);cursor:pointer;border:none;background:none;flex:1;}
+  .tab .ic{font-size:19px;}
+  .tab.active{color:var(--burgundy);font-weight:700;}
+
+  /* detail / booking shared */
+  .detail-hero{height:240px;background-size:cover;background-position:center;position:relative;display:flex;align-items:flex-start;justify-content:space-between;padding:46px 16px 0;}
+  .back{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;color:var(--burgundy);font-size:18px;cursor:pointer;border:none;}
+  .sheet{background:var(--cream);border-radius:24px 24px 0 0;margin-top:-26px;position:relative;padding:22px 18px 0;flex:1;}
+  .sheet h2{font-family:var(--serif);font-size:24px;color:var(--burgundy-dark);}
+  .pill-row{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0;}
+  .pill{background:#fff;border:1px solid #ead8cf;border-radius:20px;padding:7px 12px;font-size:11px;color:var(--charcoal);display:flex;gap:5px;align-items:center;}
+  .desc{font-size:13px;line-height:1.6;color:#5b524c;margin-bottom:16px;}
+
+  /* booking form */
+  .field{background:#fff;border-radius:14px;padding:14px 16px;margin-bottom:12px;border:1px solid #ece2d9;}
+  .field label{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);font-weight:700;}
+  .field .val{font-size:15px;color:var(--charcoal);margin-top:4px;font-weight:600;display:flex;justify-content:space-between;align-items:center;}
+  .field .val .edit{color:var(--gold);font-size:12px;}
+  .two{display:flex;gap:12px;}
+  .two .field{flex:1;}
+  .stepper{display:flex;align-items:center;gap:14px;}
+  .stepper button{width:28px;height:28px;border-radius:50%;border:1px solid var(--burgundy);color:var(--burgundy);background:#fff;font-size:16px;cursor:pointer;}
+  .promo{display:flex;gap:8px;}
+  .promo input{flex:1;border:1px dashed var(--gold);background:#fff8ef;border-radius:12px;padding:13px 14px;font-size:14px;color:var(--charcoal);}
+  .promo input::placeholder{color:#b9a98f;}
+  .promo button{border:none;background:var(--gold);color:#3a2c14;border-radius:12px;padding:0 18px;font-weight:700;cursor:pointer;}
+  .summary{background:#fff;border-radius:16px;padding:16px;margin:6px 0 14px;box-shadow:0 6px 16px rgba(0,0,0,.05);}
+  .summary .line{display:flex;justify-content:space-between;font-size:13px;color:#5b524c;margin-bottom:9px;}
+  .summary .line.total{border-top:1px dashed #e3d6cb;padding-top:11px;margin-top:4px;font-size:17px;font-weight:800;color:var(--burgundy);}
+  .summary .line .g{color:#2e8b57;}
+  .footer-cta{padding:14px 18px 22px;background:var(--cream);border-top:1px solid #eadfd6;}
+  .pay-row{display:flex;gap:10px;margin-bottom:12px;justify-content:center;}
+  .pay{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:5px;}
+
+  /* confirmation toast */
+  .toast{position:absolute;left:50%;bottom:90px;transform:translateX(-50%) translateY(20px);background:var(--burgundy-dark);color:#fff;padding:14px 20px;border-radius:14px;font-size:13px;opacity:0;pointer-events:none;transition:.3s;z-index:60;display:flex;gap:9px;align-items:center;box-shadow:0 10px 30px rgba(0,0,0,.3);}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  .toast .ck{background:var(--gold);color:#3a2c14;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;}
+
+  .lang{font-size:10px;color:var(--burgundy);border:1px solid #e6d3ca;border-radius:20px;padding:5px 10px;background:#fff;cursor:pointer;}
+  .caption{width:100%;text-align:center;color:var(--muted);font-size:12px;margin-top:4px;}
+</style>
+</head>
+<body>
+
+  <div class="stage-title">
+    <h1>The K Hotel — App Concept</h1>
+    <p>Tap the cards, rooms, and buttons. Burgundy&nbsp;#8C2332 · Gold&nbsp;#C9A36A · Cream&nbsp;#F5F0EB</p>
+  </div>
+
+  <!-- ================= PHONE 1: HOME + BOOKING ================= -->
+  <div class="phone">
+    <div class="screen">
+      <div class="notch"></div>
+
+      <!-- HOME VIEW -->
+      <div class="view active" id="home">
+        <div class="statusbar"><span>9:41</span><span>5G &nbsp; 100%</span></div>
+        <div class="scroll">
+          <div class="topbar" style="padding-top:44px;">
+            <button class="icon-btn">&#9776;</button>
+            <div class="logo">
+              <span class="ar">&#1601;&#1606;&#1583;&#1602; &#1584;&#1610; &#1603;&#1610;</span>
+              <span class="k"><small>THE</small>K</span>
+              <span class="sub">HOTEL</span>
+            </div>
+            <button class="lang">EN / ع</button>
+          </div>
+
+          <div class="hero">
+            <div class="h-inner">
+              <div class="eyebrow">Juffair · Bahrain</div>
+              <h2>Stay in Color.</h2>
+              <p>4-star luxury, 5-star feeling.</p>
+            </div>
+          </div>
+
+          <div class="section">
+            <button class="btn" onclick="go('booking')">&#128197;&nbsp; Book Your Stay</button>
+          </div>
+
+          <div class="section" style="padding-top:0;">
+            <div class="row-head"><h3>Special Offers</h3><a onclick="go('booking')">See all</a></div>
+            <div class="carousel">
+              <div class="offer" onclick="go('booking')">
+                <div class="img" style="background-image:linear-gradient(0deg,rgba(110,26,39,.15),rgba(0,0,0,0)),url('https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600&q=80')"><span class="tag">STAYCATION</span></div>
+                <div class="body"><h4>Staycation</h4><p>Junior Suite upgrade, breakfast for 2 + kids, full spa access, BHD 10 dining credit.</p><div class="price">BHD 49 <small>NET / night</small></div></div>
+              </div>
+              <div class="offer" onclick="go('booking')">
+                <div class="img" style="background-image:linear-gradient(0deg,rgba(110,26,39,.15),rgba(0,0,0,0)),url('https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=600&q=80')"><span class="tag">DAYCATION</span></div>
+                <div class="body"><h4>Daycation</h4><p>Pool, gym, sauna & steam access plus a dining credit — no overnight stay.</p><div class="price">BHD 25 <small>/ day</small></div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section" style="padding-top:0;">
+            <div class="row-head"><h3>Rooms & Suites</h3><a>240 rooms</a></div>
+            <div class="room" onclick="go('detail')">
+              <div class="thumb" style="background-image:url('https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=400&q=80')"></div>
+              <div class="meta"><h4>Deluxe Room</h4><div class="feat">39 m² · King / Twin · City view</div><div class="p">BHD 42 <small>/ night</small></div></div>
+              <span class="chev">&#8250;</span>
+            </div>
+            <div class="room" onclick="go('detail')">
+              <div class="thumb" style="background-image:url('https://images.unsplash.com/photo-1591088398332-8a7791972843?w=400&q=80')"></div>
+              <div class="meta"><h4>Premium One-Bedroom Suite</h4><div class="feat">72 m² · King · Lounge area</div><div class="p">BHD 78 <small>/ night</small></div></div>
+              <span class="chev">&#8250;</span>
+            </div>
+            <div class="room" onclick="go('detail')">
+              <div class="thumb" style="background-image:url('https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=400&q=80')"></div>
+              <div class="meta"><h4>Senior Suite</h4><div class="feat">110 m² · 2 King bedrooms</div><div class="p">BHD 120 <small>/ night</small></div></div>
+              <span class="chev">&#8250;</span>
+            </div>
+          </div>
+
+          <div class="section" style="padding-top:0;">
+            <div class="row-head"><h3>Dining</h3><a>4 outlets</a></div>
+            <div class="carousel">
+              <div class="offer" style="flex:0 0 150px;"><div class="img" style="height:90px;background-image:url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&q=80')"></div><div class="body"><h4 style="font-size:14px;">Kolors</h4><p>International buffet</p></div></div>
+              <div class="offer" style="flex:0 0 150px;"><div class="img" style="height:90px;background-image:url('https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=400&q=80')"></div><div class="body"><h4 style="font-size:14px;">The K Lounge</h4><p>Coffee & lounge</p></div></div>
+              <div class="offer" style="flex:0 0 150px;"><div class="img" style="height:90px;background-image:url('https://images.unsplash.com/photo-1543007630-9710e4a00a20?w=400&q=80')"></div><div class="body"><h4 style="font-size:14px;">Champions</h4><p>Sports lounge</p></div></div>
+            </div>
+          </div>
+          <div style="height:10px;"></div>
+        </div>
+
+        <div class="tabbar">
+          <button class="tab active"><span class="ic">&#127968;</span>Home</button>
+          <button class="tab" onclick="go('booking')"><span class="ic">&#128197;</span>Book</button>
+          <button class="tab"><span class="ic">&#127869;</span>Dining</button>
+          <button class="tab"><span class="ic">&#128241;</span>My Stay</button>
+        </div>
+      </div>
+
+      <!-- ROOM DETAIL VIEW -->
+      <div class="view" id="detail">
+        <div class="statusbar dark"><span>9:41</span><span>5G &nbsp; 100%</span></div>
+        <div class="scroll">
+          <div class="detail-hero" style="background-image:linear-gradient(180deg,rgba(0,0,0,.1),rgba(0,0,0,.05)),url('https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800&q=80')">
+            <button class="back" onclick="go('home')">&#8249;</button>
+            <button class="back">&#9825;</button>
+          </div>
+          <div class="sheet">
+            <div style="font-size:11px;letter-spacing:2px;color:var(--gold);font-weight:700;">DELUXE ROOM</div>
+            <h2>Deluxe King Room</h2>
+            <div class="pill-row">
+              <span class="pill">&#128207; 39 m²</span>
+              <span class="pill">&#128715; King bed</span>
+              <span class="pill">&#128247; City view</span>
+              <span class="pill">&#128246; Free WiFi</span>
+            </div>
+            <p class="desc">A spacious, modern room with an interactive flat-screen TV, air conditioning, tea & coffee facilities, and a private bathroom with separate shower and bath — the signature K blend of warmth and contemporary elegance.</p>
+            <div class="pill-row">
+              <span class="pill">&#127946; Pool access</span>
+              <span class="pill">&#128170; Gym</span>
+              <span class="pill">&#9749; Breakfast add-on</span>
+              <span class="pill">&#128683;&#128684; Non-smoking</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin:8px 0 16px;">
+              <div><span style="font-size:24px;font-weight:800;color:var(--burgundy);">BHD 42</span><span style="color:var(--muted);font-size:12px;"> / night</span></div>
+              <div style="color:var(--gold);font-size:13px;">&#9733;&#9733;&#9733;&#9733;&#9733; 4.6</div>
+            </div>
+          </div>
+        </div>
+        <div class="footer-cta">
+          <button class="btn" onclick="go('booking')">Select dates & book</button>
+        </div>
+      </div>
+
+      <!-- BOOKING VIEW -->
+      <div class="view" id="booking">
+        <div class="statusbar dark"><span>9:41</span><span>5G &nbsp; 100%</span></div>
+        <div class="topbar" style="padding-top:44px;">
+          <button class="back" onclick="go('home')">&#8249;</button>
+          <div style="font-family:var(--serif);font-size:18px;color:var(--burgundy-dark);font-weight:700;">Book Your Stay</div>
+          <span style="width:38px;"></span>
+        </div>
+        <div class="scroll">
+          <div class="section" style="padding-top:6px;">
+            <div class="two">
+              <div class="field"><label>Check-in</label><div class="val">23 Jun <span class="edit">&#9662;</span></div></div>
+              <div class="field"><label>Check-out</label><div class="val">25 Jun <span class="edit">&#9662;</span></div></div>
+            </div>
+
+            <div class="field">
+              <label>Guests</label>
+              <div class="val">
+                2 Adults · 1 Child
+                <div class="stepper"><button onclick="dec()">&minus;</button><span id="gcount">3</span><button onclick="inc()">+</button></div>
+              </div>
+            </div>
+
+            <div class="field" style="padding:0;overflow:hidden;">
+              <div style="padding:14px 16px;"><label>Room</label><div class="val">Deluxe King Room <span class="edit" onclick="go('home')">change</span></div></div>
+              <div style="height:90px;background:url('https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=600&q=80') center/cover;"></div>
+            </div>
+
+            <label style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);font-weight:700;display:block;margin:4px 0 8px;">Promo code</label>
+            <div class="promo">
+              <input id="promo" placeholder="e.g. KSTAY10" />
+              <button onclick="applyPromo()">Apply</button>
+            </div>
+
+            <div class="summary" style="margin-top:16px;">
+              <div class="line"><span>Deluxe Room × 2 nights</span><span>BHD 84.00</span></div>
+              <div class="line"><span>Service & tourism levy</span><span>BHD 8.40</span></div>
+              <div class="line" id="discountLine" style="display:none;"><span class="g">Promo KSTAY10 (-10%)</span><span class="g">&minus; BHD 8.40</span></div>
+              <div class="line total"><span>Total</span><span id="total">BHD 92.40</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="footer-cta">
+          <div class="pay-row">
+            <span class="pay">&#128179; Card</span>
+            <span class="pay">&#63743; Apple Pay</span>
+            <span class="pay">&#128241; Benefit</span>
+          </div>
+          <button class="btn" onclick="confirmBooking()">Confirm & Pay &nbsp;·&nbsp; <span id="payBtnTotal">BHD 92.40</span></button>
+        </div>
+      </div>
+
+      <!-- toast -->
+      <div class="toast" id="toast"><span class="ck">&#10003;</span> Booking confirmed — see you in Juffair!</div>
+    </div>
+  </div>
+
+  <p class="caption">Single-file HTML prototype · open in any browser · images load from Unsplash when online</p>
+
+<script>
+  function go(id){
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    var sc=document.querySelector('#'+id+' .scroll'); if(sc) sc.scrollTop=0;
+  }
+  var g=3;
+  function inc(){g++;document.getElementById('gcount').textContent=g;}
+  function dec(){if(g>1){g--;document.getElementById('gcount').textContent=g;}}
+  function applyPromo(){
+    var v=document.getElementById('promo').value.trim().toUpperCase();
+    var d=document.getElementById('discountLine');
+    if(v==='KSTAY10'){
+      d.style.display='flex';
+      document.getElementById('total').textContent='BHD 84.00';
+      document.getElementById('payBtnTotal').textContent='BHD 84.00';
+    }else if(v.length){
+      d.style.display='none';
+      document.getElementById('total').textContent='BHD 92.40';
+      document.getElementById('payBtnTotal').textContent='BHD 92.40';
+      alert('Try code  KSTAY10  for 10% off (demo).');
+    }
+  }
+  function confirmBooking(){
+    var t=document.getElementById('toast');
+    t.classList.add('show');
+    setTimeout(function(){t.classList.remove('show');go('home');},2200);
+  }
+</script>
+</body>
+</html>
