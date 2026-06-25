@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Raven Media — Invoice / Quotation · The K Hotel App</title>
+<style>
+:root{
+  --ink:#0F4F4D; --slate:#15625E; --gold:#c9a36a; --gold-d:#a9854e;
+  --paper:#ffffff; --soft:#f6f4f0; --line:#e6e2da; --muted:#7c7a74; --ok:#2e8b57;
+  --serif:"Playfair Display",Georgia,serif; --sans:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--sans);background:#d7d2c8;color:var(--ink);padding:28px 16px;line-height:1.55;}
+.toolbar{max-width:880px;margin:0 auto 14px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
+.toolbar .t{font-size:12px;color:#55524c;}
+.btn{background:var(--ink);color:#fff;border:none;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:700;cursor:pointer;}
+.btn.gold{background:var(--gold);color:#2b230f;}
+
+.sheet{max-width:880px;margin:0 auto;background:var(--paper);box-shadow:0 30px 70px rgba(20,15,10,.25);border-radius:6px;overflow:hidden;}
+
+/* header */
+.head{background:linear-gradient(120deg,var(--ink),var(--slate));color:#fff;padding:30px 38px;display:flex;justify-content:space-between;align-items:flex-start;position:relative;overflow:hidden;}
+.head .glow{position:absolute;top:-40%;right:-6%;width:320px;height:320px;background:radial-gradient(circle,rgba(201,163,106,.35),transparent 65%);}
+.brand{position:relative;z-index:2;}
+.brand .logo{display:flex;align-items:center;gap:12px;}
+.brand .mark{width:46px;height:46px;border:2px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;}
+.brand .name{font-family:var(--serif);font-size:27px;font-weight:800;letter-spacing:.5px;}
+.brand .tag{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-top:3px;}
+.brand .contact{font-size:11px;color:#c9c6c0;margin-top:14px;line-height:1.7;}
+.brand .contact .ph{color:#8c887f;}
+.inv-meta{position:relative;z-index:2;text-align:right;}
+.inv-meta .ttl{font-family:var(--serif);font-size:30px;font-weight:800;color:#fff;}
+.inv-meta .sub{font-size:11px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:12px;}
+.inv-meta table{font-size:12px;color:#d6d3cd;margin-left:auto;}
+.inv-meta td{padding:2px 0;}
+.inv-meta td.k{color:#8c887f;padding-right:14px;text-align:left;}
+.inv-meta td.v{color:#fff;font-weight:700;text-align:right;}
+.ph{color:var(--gold-d);font-style:italic;}
+
+/* body */
+.body{padding:28px 38px;}
+.parties{display:flex;gap:30px;margin-bottom:8px;flex-wrap:wrap;}
+.party{flex:1;min-width:230px;}
+.party .lbl{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold-d);font-weight:800;margin-bottom:6px;}
+.party .nm{font-size:15px;font-weight:800;}
+.party .ln{font-size:12px;color:#55524c;}
+
+.intro{background:var(--soft);border-left:3px solid var(--gold);border-radius:6px;padding:13px 16px;font-size:13px;color:#4a473f;margin:20px 0 26px;}
+
+.sol{border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:26px;}
+.sol .sh{background:var(--ink);color:#fff;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;}
+.sol .sh .a{display:flex;align-items:center;gap:12px;}
+.sol .sh .badge{width:30px;height:30px;border-radius:50%;background:var(--gold);color:#2b230f;display:flex;align-items:center;justify-content:center;font-weight:800;font-family:var(--serif);}
+.sol .sh h3{font-family:var(--serif);font-size:18px;}
+.sol .sh .price{text-align:right;}
+.sol .sh .price b{font-size:18px;}
+.sol .sh .price small{display:block;font-size:10px;color:#b9b5ac;}
+.sol .desc{padding:14px 18px 4px;font-size:12.5px;color:#55524c;}
+.feat-h{padding:6px 18px 4px;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold-d);font-weight:800;}
+.feats{columns:2;column-gap:26px;padding:4px 18px 14px;}
+.feats div{font-size:12px;color:#3d3b35;padding:3px 0 3px 18px;position:relative;break-inside:avoid;}
+.feats div::before{content:'✓';position:absolute;left:0;color:var(--gold-d);font-weight:800;}
+
+table.items{width:100%;border-collapse:collapse;}
+table.items th{background:var(--soft);text-align:left;font-size:10px;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);padding:9px 18px;}
+table.items th.r,table.items td.r{text-align:right;}
+table.items td{padding:11px 18px;font-size:13px;border-top:1px solid var(--line);}
+table.items td .n{font-size:11px;color:var(--muted);}
+.sub td{border-top:2px solid var(--ink);font-weight:700;}
+.totline td{font-size:13px;}
+.grand td{background:var(--ink);color:#fff;font-weight:800;font-size:15px;padding:13px 18px;}
+.grand td .small{font-size:10px;color:#b9b5ac;font-weight:400;}
+.free{display:inline-block;background:#e8f3ec;color:var(--ok);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;margin:8px 18px 14px;}
+
+.note{font-size:11px;color:var(--muted);}
+.cols2{display:flex;gap:26px;flex-wrap:wrap;margin-top:8px;}
+.cols2 .c{flex:1;min-width:240px;}
+.sechead{font-family:var(--serif);font-size:16px;color:var(--ink);margin:24px 0 10px;border-bottom:2px solid var(--gold);padding-bottom:5px;}
+.pay td{padding:4px 0;font-size:12.5px;}
+.pay td.k{color:var(--muted);padding-right:14px;}
+.terms{font-size:11.5px;color:#55524c;}
+.terms li{margin:4px 0 4px 16px;}
+
+.confirm-box{background:#fff8ef;border:1px solid var(--gold);border-radius:10px;padding:16px 18px;margin:24px 0;}
+.confirm-box h4{font-size:13px;color:var(--gold-d);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+.confirm-box ol{font-size:12.5px;color:#5a4a2a;margin-left:18px;}
+.confirm-box li{margin:4px 0;}
+
+.foot{background:var(--soft);padding:18px 38px;text-align:center;font-size:11px;color:var(--muted);border-top:1px solid var(--line);}
+.foot .sig{font-family:var(--serif);font-size:15px;color:var(--ink);}
+
+@media print{
+  body{background:#fff;padding:0;}
+  .toolbar{display:none;}
+  .sheet{box-shadow:none;max-width:100%;border-radius:0;}
+  .sol,.confirm-box{break-inside:avoid;}
+}
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <span class="t">💡 Tip: use “Save as PDF” in the print dialog to export this invoice. Fields in <span class="ph">italic gold</span> are placeholders to confirm.</span>
+  <button class="btn gold" onclick="window.print()">🖨️ Print / Save as PDF</button>
+</div>
+
+<div class="sheet">
+
+  <!-- HEADER -->
+  <div class="head">
+    <div class="glow"></div>
+    <div class="brand">
+      <div class="logo">
+        <div class="mark">
+          <svg viewBox="0 0 100 50" width="40" height="22" aria-label="Raven Media">
+            <path fill="#fff" d="M50 13 C46 4 44 2 44 2 C44 8 40 12 30 16 C18 21 6 22 2 22 C14 24 22 26 30 30 C24 28 16 28 10 30 C20 31 28 34 34 40 C34 33 40 30 50 30 C60 30 66 33 66 40 C72 34 80 31 90 30 C84 28 76 28 70 30 C78 26 86 24 98 22 C94 22 82 21 70 16 C60 12 56 8 56 2 C56 2 54 4 50 13 Z"/>
+          </svg>
+        </div>
+        <div><div class="name">RAVEN MEDIA</div><div class="tag">Digital · Apps · Brand</div></div>
+      </div>
+      <div class="contact">
+        <span class="ph">[Address line, City, Kingdom of Bahrain]</span><br>
+        <span class="ph">[CR No.]</span><br>
+        +973 36442570 · <span class="ph">[email]</span> · <span class="ph">[website]</span>
+      </div>
+    </div>
+    <div class="inv-meta">
+      <div class="sub">Proposal &amp; Pricing</div>
+      <div class="ttl">QUOTATION</div>
+      <table>
+        <tr><td class="k">Quotation No.</td><td class="v ph">[RM-2026-001]</td></tr>
+        <tr><td class="k">Date</td><td class="v">25 Jun 2026</td></tr>
+        <tr><td class="k">Valid until</td><td class="v ph">[25 Jul 2026]</td></tr>
+        <tr><td class="k">Currency</td><td class="v">BHD</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="body">
+
+    <div class="parties">
+      <div class="party">
+        <div class="lbl">Billed To</div>
+        <div class="nm">The K Hotel</div>
+        <div class="ln">Attn: Ms. Noorman</div>
+        <div class="ln">Block 324, Juffair, Manama, Kingdom of Bahrain</div>
+        <div class="ln ph">[CR No.]</div>
+        <div class="ln">+973 36600499</div>
+      </div>
+      <div class="party">
+        <div class="lbl">Project</div>
+        <div class="nm">The K Hotel — Mobile App & Web Platform</div>
+        <div class="ln">Guest booking application (iOS · Android · Web) + back-office dashboard</div>
+        <div class="ln">Brand: Burgundy #8C2332 · Gold #C9A36A · EN / العربية</div>
+        <div class="ln" style="margin-top:6px"><b>Conversion applied:</b> 1 USD = 0.376 BHD (pegged)</div>
+      </div>
+    </div>
+
+    <div class="intro">
+      This document presents <b>two solution options</b> for delivering The K Hotel application. Each option is fully described below with its complete scope of features and pricing in Bahraini Dinar (BHD). The client may select <b>one</b> option to proceed; the chosen option becomes the binding invoice.
+    </div>
+
+    <!-- ===================== SOLUTION 1 ===================== -->
+    <div class="sol">
+      <div class="sh">
+        <div class="a"><span class="badge">1</span><h3>Custom-Built Application &amp; Web Platform</h3></div>
+        <div class="price"><b>BHD 2,256.000</b><small>one-time + BHD 188.000 / year</small></div>
+      </div>
+      <div class="desc">
+        A fully custom, brand-owned solution built from the ground up — native iOS &amp; Android apps plus a responsive web app, a powerful no-code admin dashboard, and <b>two-way integration between the website and the app</b> so that any booking made on the website is preserved and synced in the app (and vice-versa) under one unified guest profile.
+      </div>
+      <div class="feat-h">Everything this solution includes</div>
+      <div class="feats">
+        <div>Native iOS &amp; Android apps + responsive web</div>
+        <div>100% custom UI/UX in the K Hotel brand</div>
+        <div>Bilingual English + Arabic (full RTL)</div>
+        <div>Full booking engine with real-time availability</div>
+        <div>Secure payments via <b>Tap Payments</b> — card, Apple&nbsp;Pay, Google&nbsp;Pay, Benefit</div>
+        <div><b>Website ↔ App two-way sync</b> (bookings preserved across both)</div>
+        <div>Unified guest profile across web &amp; app</div>
+        <div>Rooms &amp; suites — all types, galleries, live rates</div>
+        <div>Dining — 4 outlets, menus &amp; table reservations</div>
+        <div>In-room dining / room-service ordering</div>
+        <div>Spa &amp; wellness treatment booking</div>
+        <div>Meetings &amp; events enquiry &amp; booking</div>
+        <div>Special offers &amp; promotions</div>
+        <div>My Reservation — confirmation, timeline, modify/cancel</div>
+        <div>Mobile check-in &amp; digital room key</div>
+        <div>Apple / Google Wallet pass</div>
+        <div>Concierge live chat + WhatsApp</div>
+        <div>Push notifications &amp; campaign sender</div>
+        <div>Automated 3-hour pre-arrival reminder</div>
+        <div>Post-stay feedback &amp; reviews</div>
+        <div>K Rewards loyalty — points, tiers, member rates</div>
+        <div>Multi-property ready (scales to future K hotels)</div>
+        <div>Admin dashboard: block page editor + live preview</div>
+        <div>Draft → preview → publish + version rollback</div>
+        <div>Media library &amp; image management</div>
+        <div>Promotions manager (codes, validity, auto-expire)</div>
+        <div>Pricing &amp; seasonal rate manager</div>
+        <div>Catalog manager (rooms, dining, spa, events)</div>
+        <div>Guests &amp; CRM + send password-reset links</div>
+        <div>Analytics &amp; reporting dashboard</div>
+        <div>Roles &amp; permissions for staff</div>
+        <div>PMS / channel-manager integration</div>
+        <div>App Store &amp; Google Play submission</div>
+        <div>Security &amp; data-privacy (GDPR) setup</div>
+        <div>Staff training, handover &amp; documentation</div>
+        <div>Hosting, deployment &amp; cloud setup</div>
+      </div>
+      <table class="items">
+        <tr><th>Description</th><th class="r">Qty</th><th class="r">Rate (BHD)</th><th class="r">Amount (BHD)</th></tr>
+        <tr><td>Design &amp; Development <span class="n">— full custom build, apps + web + dashboard + website integration + Tap Payments</span></td><td class="r">1</td><td class="r">1,880.000</td><td class="r">1,880.000</td></tr>
+        <tr><td>Testing &amp; Quality Assurance <span class="n">— QA, device testing, EN/AR, security</span></td><td class="r">1</td><td class="r">376.000</td><td class="r">376.000</td></tr>
+        <tr><td>Website ↔ App integration &amp; data sync</td><td class="r">1</td><td class="r" style="color:var(--ok)">Included</td><td class="r" style="color:var(--ok)">Included</td></tr>
+        <tr class="sub"><td colspan="3">One-time project total</td><td class="r">BHD 2,256.000</td></tr>
+        <tr class="totline"><td colspan="3">Annual Hosting &amp; Support <span class="n">(recurring, billed yearly)</span></td><td class="r">BHD 188.000 / yr</td></tr>
+      </table>
+      <span class="free">★ Includes 4 months complimentary support &amp; maintenance — first annual fee starts in month 5</span>
+    </div>
+
+    <!-- ===================== SOLUTION 2 ===================== -->
+    <div class="sol">
+      <div class="sh">
+        <div class="a"><span class="badge">2</span><h3>Rapid Website-to-App Solution</h3></div>
+        <div class="price"><b>BHD 1,500.000</b><small>one-time + BHD 100.000 / year</small></div>
+      </div>
+      <div class="desc">
+        A fast, cost-effective route to market — branded iOS &amp; Android apps built on top of the existing website, with content, offers and prices managed directly through the website's admin. Ideal to launch quickly and validate demand, with a single support plan covering both the website and the application.
+      </div>
+      <div class="feat-h">Everything this solution includes</div>
+      <div class="feats">
+        <div>Branded iOS &amp; Android apps (K colors &amp; logo)</div>
+        <div>Built on / linked to the existing website</div>
+        <div>Online booking via website integration</div>
+        <div>Rooms, dining, spa &amp; offers displayed in-app</div>
+        <div>Special offers &amp; promotions display</div>
+        <div>Push notifications to app users</div>
+        <div>Content, offers &amp; prices edited via website admin</div>
+        <div>Add / edit text, images &amp; blocks via website CMS</div>
+        <div>Preview before publishing</div>
+        <div>Guest management &amp; password-reset via admin</div>
+        <div>Bilingual English / Arabic (where supported)</div>
+        <div>Basic analytics &amp; app insights</div>
+        <div>App Store &amp; Google Play publishing</div>
+        <div>Support for both website &amp; application</div>
+      </div>
+      <table class="items">
+        <tr><th>Description</th><th class="r">Qty</th><th class="r">Rate (BHD)</th><th class="r">Amount (BHD)</th></tr>
+        <tr><td>Setup, branding &amp; app build <span class="n">— configuration, publishing to stores</span></td><td class="r">1</td><td class="r">1,500.000</td><td class="r">1,500.000</td></tr>
+        <tr class="sub"><td colspan="3">One-time project total</td><td class="r">BHD 1,500.000</td></tr>
+        <tr class="totline"><td colspan="3">Annual Support — website + application <span class="n">(recurring, billed yearly)</span></td><td class="r">BHD 100.000 / yr</td></tr>
+      </table>
+      <span class="free">★ Includes 4 months complimentary support &amp; maintenance — first annual fee starts in month 5</span>
+    </div>
+
+    <!-- SUMMARY -->
+    <div class="sechead">Summary</div>
+    <table class="items" style="border:1px solid var(--line);border-radius:8px;overflow:hidden">
+      <tr><th>Option</th><th class="r">One-time (BHD)</th><th class="r">Annual (BHD)</th><th class="r">Free support</th></tr>
+      <tr><td><b>1 · Custom-Built App &amp; Web Platform</b></td><td class="r">2,256.000</td><td class="r">188.000 / yr</td><td class="r">4 months</td></tr>
+      <tr><td><b>2 · Rapid Website-to-App Solution</b></td><td class="r">1,500.000</td><td class="r">100.000 / yr</td><td class="r">4 months</td></tr>
+    </table>
+    <p class="note" style="margin-top:8px">Prices are not subject to VAT. Annual fees are recurring and begin after the 4-month complimentary support period. All amounts in Bahraini Dinar (BHD).</p>
+
+    <!-- PAYMENT + TERMS -->
+    <div class="cols2">
+      <div class="c">
+        <div class="sechead">Payment Details</div>
+        <table class="pay">
+          <tr><td class="k">Payable to</td><td>Raven Media</td></tr>
+          <tr><td class="k">Bank</td><td class="ph">[Bank name]</td></tr>
+          <tr><td class="k">Account name</td><td class="ph">[Account holder]</td></tr>
+          <tr><td class="k">IBAN</td><td class="ph">[BH00 0000 0000 0000 0000 00]</td></tr>
+          <tr><td class="k">Other methods</td><td class="ph">[BenefitPay / link]</td></tr>
+          <tr><td class="k">Terms</td><td>50% deposit on order · 50% on delivery</td></tr>
+        </table>
+      </div>
+      <div class="c">
+        <div class="sechead">Terms &amp; Conditions</div>
+        <ul class="terms">
+          <li>Quotation valid for <span class="ph">[30]</span> days from the invoice date.</li>
+          <li>Project timeline confirmed on acceptance and receipt of the initial payment.</li>
+          <li>Annual hosting &amp; support renews yearly; both solutions include 4 months free support.</li>
+          <li>Third-party costs (Apple Developer, Google Play, payment-gateway &amp; PMS fees) are billed at cost unless stated.</li>
+          <li>Prices exclude content/photography supplied by the client.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- CONFIRM -->
+    <div class="confirm-box">
+      <h4>⚑ Details to confirm before this invoice is finalised</h4>
+      <ol>
+        <li><b>Raven Media:</b> address, CR no., email &amp; website.</li>
+        <li><b>The K Hotel:</b> CR no. &amp; billing email for Ms. Noorman.</li>
+        <li><b>Quotation number</b> and <b>validity</b> date.</li>
+        <li><b>Bank / payment details</b> for the payment section.</li>
+      </ol>
+    </div>
+
+  </div>
+
+  <div class="foot">
+    <div class="sig">Thank you for your business.</div>
+    Raven Media · Digital · Apps · Brand &nbsp;|&nbsp; <span class="ph">[email]</span> · +973 36442570 · <span class="ph">[website]</span>
+  </div>
+</div>
+
+</body>
+</html>
