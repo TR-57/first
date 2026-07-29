@@ -20,3 +20,6 @@ env/
 .DS_Store
 .idea/
 .vscode/
+
+# Local scratch workspace (not part of the connector code)
+scratchpad/
