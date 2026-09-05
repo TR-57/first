@@ -68,6 +68,15 @@ main.py                # CLI demo / connection test
 .env                   # your real secrets (gitignored)
 ```
 
+## WordPress snippets
+
+`wordpress/tartebz-shop-order-manager.php` — a Code Snippets PHP snippet that
+creates a **Shop Order Manager** role limited to WooCommerce orders. v1.1 adds
+the `manage_woocommerce` capability so courier/shipping plugins work for the
+role, and a shipment-error banner on the order screen with quick
+"Back to Orders" / "Create New Order" buttons. Install instructions are in the
+file header.
+
 ## Notes
 
 - WooCommerce REST API auth uses the Consumer Key/Secret over HTTPS.
